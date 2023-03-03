@@ -8,9 +8,7 @@ const app = express();
 app.use(express.static(__dirname + "/../public"));
 
 app.use('/api/products', productsRouter);
-app.use('/api/products/:id', productsRouter);
 app.use('/api/carts', cartsRouter);
-app.use('/api/carts/:id', cartsRouter);
 
 app.listen(8080, () => {
     console.log("Server Listening - Port 8080");
