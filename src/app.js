@@ -5,11 +5,17 @@ import cartsRouter from "./routes/carts.router.js";
 
 const app = express();
 
-app.use(express.static(__dirname + "/../public"));
+async function main() {
 
-app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter);
+    app.use(express.static(__dirname + "/../public"));
 
-app.listen(8080, () => {
-    console.log("Server Listening - Port 8080");
-});
+    app.use('/api/products', productsRouter);
+    app.use('/api/carts', cartsRouter);
+
+    app.listen(8080, () => {
+        console.log("Server Listening - Port 8080");
+    });
+
+}
+
+main();

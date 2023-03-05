@@ -5,12 +5,12 @@ cartsRouter.use(json());
 
 let carts = [];
 
-//LECTURA GENERAL
+//LECTURA CARRITOS GENERAL
 cartsRouter.get("/", (req, res) => {
     res.send(carts);
 });
 
-//LECTURA x CID
+//LECTURA CARRITO x CID
 cartsRouter.get("/:cid", (req, res) => {
     const cartID = Number(req.params.cid);
     const cart = carts.find((c) => c.cid === cartID);
@@ -22,7 +22,7 @@ cartsRouter.get("/:cid", (req, res) => {
     res.send(cart);
 });
 
-//AGREGAR
+//AGREGAR CARRITO
 cartsRouter.post("/", (req, res) => {
     const validatorProducts = req.body.products ?? [];
     let validatorComponents = 0;
@@ -44,8 +44,8 @@ cartsRouter.post("/", (req, res) => {
     res.send(newCart);
 });
 
-//MODIFICAR x CID + PID
-cartsRouter.put("/:cid/product/:pid", (req, res) => {
+//AGREGAR PRODUCTO EN CARRITO x CID + PID
+cartsRouter.post("/:cid/product/:pid", (req, res) => {
     const cartID = Number(req.params.cid);
     const cart = carts.find((c) => c.cid === cartID);
     if(!cart){
@@ -64,15 +64,6 @@ cartsRouter.put("/:cid/product/:pid", (req, res) => {
         console.log(req.body.productQuantity)
     } else { //Si el producto ya está en el carrito suma la cantidad.
         product.productQuantity = product.productQuantity + req.body.productQuantity;
-        // cart.products = cart.products.map((c) => {
-        //     if (c.productCode === productID){
-        //         return {
-        //             productCode: productID,
-        //             productQuantity: c.productQuantity + req.body.productQuantity
-        //         };
-        //     };
-        //     return c;
-        // });
     }
 
     res.send(cart);
