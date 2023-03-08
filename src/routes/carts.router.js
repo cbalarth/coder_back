@@ -1,72 +1,70 @@
-import { Router, json } from "express";
+import cartManager from "../components/cartManager.js";
+import express from "express";
 
-const cartsRouter = Router();
-cartsRouter.use(json());
+const manager = new cartManager();
+const cartsRouter = express.Router();
 
-let carts = [];
+//LECTURA GENERAL CARRITOS
+cartsRouter.get("/", async (req, res) => {
+    const carts = await manager.getCarts();
+    const {limit} = req.query;
+    const cartsLimited = carts.slice(0, Number(limit));
 
-//LECTURA CARRITOS GENERAL
-cartsRouter.get("/", (req, res) => {
-    res.send(carts);
+    if(limit) {
+        return res.status(201).send({data:cartsLimited});
+    }
+
+    res.status(201).send({data:carts});
 });
 
 //LECTURA CARRITO x CID
-cartsRouter.get("/:cid", (req, res) => {
+cartsRouter.get("/:cid", async (req, res) => {
     const cartID = Number(req.params.cid);
-    const cart = carts.find((c) => c.cid === cartID);
+    const cart = await manager.getCartById(cartID);
 
     if(!cart){
-        return res.status(400).send({error: `¡No existe el carrito con ID ${cartID}!`});
+        return res.status(401).send({error: `¡No existe el carrito con ID ${cartID}!`});
     }
 
-    res.send(cart);
+    res.status(201).send({data: cart});
 });
 
 //AGREGAR CARRITO
-cartsRouter.post("/", (req, res) => {
-    const validatorProducts = req.body.products ?? [];
-    let validatorComponents = 0;
-    validatorProducts.map((p) => {
-        if(!p.productCode || !p.productQuantity){
-            validatorComponents = validatorComponents + 1;
-        }
-    });
-    if(validatorProducts.length < 1 || validatorComponents > 0){
-        return res.status(400).send({error:"¡Missing parameters!"});
+cartsRouter.post("/", async (req, res) => {
+    const {
+        products,
+    } = req.body;
+
+
+    if(!req.body.products){
+        return res.status(401).send({error:"¡Missing parameters!"});
     }
 
-    const newCart = {
-        ...req.body,
-        cid: carts.length, // mejorar asignacion automatica
-    }
+    let carts = await manager.getCarts(); //Inicia lectura general.
+    const index = Math.max(...carts.map(c => Number(c.cid)), 0) + 1; //Crear ID automático desde 1 en adelante y siempre siguiente al mayor valor actual.
+    const newCart = await manager.addCart(
+        index,
+        products
+    );
 
-    carts = [...carts, newCart];
-    res.send(newCart);
+    carts = await manager.getCarts(); //Actualiza lectura general.
+    const indexOfNewCart = carts.findIndex((c) => c.cid == index);
+    res.status(201).send({data: carts[indexOfNewCart]});
 });
 
 //AGREGAR PRODUCTO EN CARRITO x CID + PID
-cartsRouter.post("/:cid/product/:pid", (req, res) => {
+cartsRouter.put("/:cid/product/:pid", async (req, res) => {
     const cartID = Number(req.params.cid);
-    const cart = carts.find((c) => c.cid === cartID);
-    if(!cart){
-        return res.status(400).send({error: `¡No existe el carrito con ID ${cartID}!`});
-    }
-
     const productID = req.params.pid;
-    const product = cart.products.find((p) => p.productCode === productID);
-    if(!product){ //Si el producto no está en el carrito lo agrega.
-        const newProduct = {
-            productCode: productID,
-            ...req.body
-        }
     
-        cart.products = [...cart.products, newProduct];
-        console.log(req.body.productQuantity)
-    } else { //Si el producto ya está en el carrito suma la cantidad.
-        product.productQuantity = product.productQuantity + req.body.productQuantity;
+    let cart = await manager.getCartById(cartID); //Inicia lectura específica.
+    if(!cart){
+        return res.status(401).send({error: `¡No existe el carrito con ID ${cartID}!`});
     }
 
-    res.send(cart);
+    await manager.updateCart(cartID, productID, req.body);
+    cart = await manager.getCartById(cartID); //Actualizar lectura específica.
+    res.status(201).send({data: cart});
 });
 
 export default cartsRouter;

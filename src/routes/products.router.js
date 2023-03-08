@@ -17,6 +17,18 @@ productsRouter.get("/", async (req, res) => {
     res.status(201).send({data:products});
 });
 
+//LECTURA PRODUCTO x PID
+productsRouter.get("/:pid", async (req, res) => {
+    const productID = Number(req.params.pid);
+    const product = await manager.getProductById(productID);
+
+    if(!product){
+        return res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
+    }
+
+    res.status(201).send({data: product});
+});
+
 //AGREGAR PRODUCTO
 productsRouter.post("/", async (req, res) => {
     const {
@@ -52,18 +64,6 @@ productsRouter.post("/", async (req, res) => {
     products = await manager.getProducts(); //Actualiza lectura general.
     const indexOfNewProduct = products.findIndex((p) => p.pid == index);
     res.status(201).send({data: products[indexOfNewProduct]});
-});
-
-//LECTURA x PID
-productsRouter.get("/:pid", async (req, res) => {
-    const productID = Number(req.params.pid);
-    const product = await manager.getProductById(productID);
-
-    if(!product){
-        return res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
-    }
-
-    res.status(201).send({data: product});
 });
 
 //MODIFICAR x PID

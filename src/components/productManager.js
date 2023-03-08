@@ -1,5 +1,4 @@
 import fs from "fs";
-// let index = 0;
 
 class productManager {
     #path = "./products.json";
@@ -21,7 +20,6 @@ class productManager {
     const products = await this.getProducts();
     const updatedProducts = [...products, newProduct];
     await fs.promises.writeFile(this.#path, JSON.stringify(updatedProducts)); //Crear archivo JSON con string del objeto base.
-    // index = index + 1;
     }
 
     async getProducts() {
