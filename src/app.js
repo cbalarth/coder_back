@@ -4,6 +4,8 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 
 const app = express();
+app.use(express.json()); //Para qué sirve esto?
+// app.use(express.urlencoded()); //Para qué sirve esto?
 
 async function main() {
 

@@ -1,73 +1,91 @@
-import { Router, json } from "express";
+import productManager from "../components/productManager.js";
+import express from "express";
 
-const productsRouter = Router();
-productsRouter.use(json());
+const manager = new productManager();
+const productsRouter = express.Router();
 
-let products = [];
+//LECTURA GENERAL PRODUCTOS
+productsRouter.get("/", async (req, res) => {
+    const products = await manager.getProducts();
+    const {limit} = req.query;
+    const productsLimited = products.slice(0, Number(limit));
 
-//LECTURA GENERAL
-productsRouter.get("/", (req, res) => {
-    res.send(products);
+    if(limit) {
+        return res.status(201).send({data:productsLimited});
+    }
+
+    res.status(201).send({data:products});
+});
+
+//AGREGAR PRODUCTO
+productsRouter.post("/", async (req, res) => {
+    const {
+        title,
+        description,
+        code,
+        price,
+        status = true,
+        stock,
+        category,
+        thumbnails = [],
+    } = req.body;
+
+
+    if(!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.stock || !req.body.category){
+        return res.status(401).send({error:"¡Missing parameters!"});
+    }
+
+    let products = await manager.getProducts(); //Inicia lectura general.
+    const index = Math.max(...products.map(p => Number(p.pid)), 0) + 1; //Crear ID automático desde 1 en adelante y siempre siguiente al mayor valor actual.
+    const newProduct = await manager.addProduct(
+        index,
+        title,
+        description,
+        code,
+        price,
+        status,
+        stock,
+        category,
+        thumbnails
+    );
+
+    products = await manager.getProducts(); //Actualiza lectura general.
+    const indexOfNewProduct = products.findIndex((p) => p.pid == index);
+    res.status(201).send({data: products[indexOfNewProduct]});
 });
 
 //LECTURA x PID
-productsRouter.get("/:pid", (req, res) => {
+productsRouter.get("/:pid", async (req, res) => {
     const productID = Number(req.params.pid);
-    const product = products.find((p) => p.pid === productID);
+    const product = await manager.getProductById(productID);
 
     if(!product){
-        return res.status(400).send({error: `¡No existe el producto con ID ${productID}!`});
+        return res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
     }
 
-    res.send(product);
-});
-
-//AGREGAR
-productsRouter.post("/", (req, res) => {
-    if(!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.status || !req.body.stock || !req.body.category || !req.body.thumbnails){
-        return res.status(400).send({error:"¡Missing parameters!"});
-    }
-
-    const newProduct = {
-        ...req.body,
-        pid: products.length, // mejorar asignacion automatica
-    }
-
-    products = [...products, newProduct];
-    res.send(newProduct);
+    res.status(201).send({data: product});
 });
 
 //MODIFICAR x PID
-productsRouter.put("/:pid", (req, res) => {
-    if(!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.status || !req.body.stock || !req.body.category || !req.body.thumbnails){
-        return res.status(400).send({error:"¡Missing parameters!"});
-    }
-
+productsRouter.put("/:pid", async (req, res) => {
     const productID = Number(req.params.pid);
-    const product = products.find((p) => p.pid === productID);
+    let product = await manager.getProductById(productID); //Inicia lectura específica.
+
     if(!product){
-        return res.status(400).send({error: `¡No existe el producto con ID ${productID}!`});
+        return res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
     }
     
-
-    products = products.map((p) => {
-        if (p.pid === productID){
-            return {
-                ...req.body,
-                pid: p.pid,
-            };
-        };
-        return p;
-    });
-
-    res.send(product);
+    await manager.updateProduct(productID, req.body);
+    product = await manager.getProductById(productID); //Actualizar lectura específica.
+    res.status(201).send({data: product});
 });
 
 //ELIMINAR x ID
-productsRouter.delete("/:pid", (req, res) => {
+productsRouter.delete("/:pid", async (req, res) => {
     const productID = Number(req.params.pid);
-    products = products.filter((p) => p.pid !== productID);
-    res.send(products);
+    await manager.deleteProduct(productID);
+    const products = await manager.getProducts(); //Inicia lectura general.
+    res.status(201).send(products);
 });
 
 export default productsRouter;
