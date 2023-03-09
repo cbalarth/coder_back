@@ -2,18 +2,6 @@ import fs from "fs";
 
 class cartManager {
     #path = "./carts.json";
-    carts = [];
-
-    async addCart(cid, products) {
-        const newCart = {
-            cid,
-            products,
-    };
-
-    const carts = await this.getCarts();
-    const updatedcarts = [...carts, newCart];
-    await fs.promises.writeFile(this.#path, JSON.stringify(updatedcarts)); //Crear archivo JSON con string del objeto base.
-    }
 
     async getCarts() {
         try {
@@ -34,41 +22,39 @@ class cartManager {
         }
     }
 
+    async addCart(cid, products) {
+        const newCart = {
+            cid,
+            products,
+    };
+
+    const carts = await this.getCarts();
+    const updatedcarts = [...carts, newCart];
+    await fs.promises.writeFile(this.#path, JSON.stringify(updatedcarts)); //Crear archivo JSON con string del objeto.
+    }
+
     async updateCart(cartID, productID, data) {
         const carts = await this.getCarts();
         const cartIndexToBeUpdated = carts.findIndex((c) => c.cid == cartID);
-        console.log(cartIndexToBeUpdated);
         const productIndexToBeUpdated = carts[cartIndexToBeUpdated].products.findIndex((p) => p.productCode == productID);
-        console.log(productIndexToBeUpdated);
         try {
-            if(productIndexToBeUpdated<0){
-                carts[cartIndexToBeUpdated].products.push({
+            if(productIndexToBeUpdated<0){ //Si aún no hay unidades de ese producto en ese carrito.
+                carts[cartIndexToBeUpdated].products.push({ //Agrega el producto con su cantidad.
                     productCode: Number(productID),
                     ...data,
                 })
-            } else {
+            } else { //Si ya hay unidades de ese producto en ese carrito.
                 carts[cartIndexToBeUpdated].products[productIndexToBeUpdated] = {
                     ...carts[cartIndexToBeUpdated].products[productIndexToBeUpdated],
-                    productQuantity: carts[cartIndexToBeUpdated].products[productIndexToBeUpdated].productQuantity + data.productQuantity,
+                    productQuantity: carts[cartIndexToBeUpdated].products[productIndexToBeUpdated].productQuantity + data.productQuantity, //Aumenta la cantidad del producto.
                 }
             }
-
-            await fs.promises.writeFile(this.#path, JSON.stringify(carts));
+            await fs.promises.writeFile(this.#path, JSON.stringify(carts)); //Crear archivo JSON con string del objeto.
             return carts[cartIndexToBeUpdated];
         } catch (e) {
-            return console.log((`ERROR: ¡No existe el carto con ID ${cartID}!`));
+            return console.log((`ERROR: ¡No existe el carrito con ID ${cartID}!`));
         }
     }
 }
-
-//     if(!product){ //Si el producto no está en el carrito lo agrega.
-//         const newProduct = {
-//             productCode: productID,
-//             ...req.body
-//         }
-//         cart.products = [...cart.products, newProduct];
-//     } else { //Si el producto ya está en el carrito suma la cantidad.
-//         product.productQuantity = product.productQuantity + req.body.productQuantity;
-//     }
 
 export default cartManager;

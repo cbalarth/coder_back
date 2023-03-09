@@ -2,25 +2,6 @@ import fs from "fs";
 
 class productManager {
     #path = "./products.json";
-    products = [];
-
-    async addProduct(pid, title, description, code, price, status, stock, category, thumbnails) {
-        const newProduct = {
-            pid,
-            title,
-            description,
-            code,
-            price,
-            status,
-            stock,
-            category,
-            thumbnails,
-    };
-
-    const products = await this.getProducts();
-    const updatedProducts = [...products, newProduct];
-    await fs.promises.writeFile(this.#path, JSON.stringify(updatedProducts)); //Crear archivo JSON con string del objeto base.
-    }
 
     async getProducts() {
         try {
@@ -41,16 +22,34 @@ class productManager {
         }
     }
 
+    async addProduct(pid, title, description, code, price, status, stock, category, thumbnails) {
+        const newProduct = {
+            pid,
+            title,
+            description,
+            code,
+            price,
+            status,
+            stock,
+            category,
+            thumbnails,
+    };
+
+    const products = await this.getProducts();
+    const updatedProducts = [...products, newProduct];
+    await fs.promises.writeFile(this.#path, JSON.stringify(updatedProducts)); //Crear archivo JSON con string del objeto.
+    }
+
     async updateProduct(productID, data) {
         const products = await this.getProducts();
-        const indexToBeUpdated = products.findIndex((p) => p.pid == productID);
+        const productIndexToBeUpdated = products.findIndex((p) => p.pid == productID);
         try {
             products[indexToBeUpdated] = {
-                ...products[indexToBeUpdated],
+                ...products[productIndexToBeUpdated],
                 ...data,
             }
-            await fs.promises.writeFile(this.#path, JSON.stringify(products));
-            return products[indexToBeUpdated];
+            await fs.promises.writeFile(this.#path, JSON.stringify(products)); //Crear archivo JSON con string del objeto.
+            return products[productIndexToBeUpdated];
         } catch (e) {
             return console.log((`ERROR: ¡No existe el producto con ID ${productID}!`));
         }
@@ -59,10 +58,10 @@ class productManager {
     async deleteProduct(productID) {
         const products = await this.getProducts();
         try {
-            const updatedProducts = products.filter((p) => {
+            const updatedProducts = products.filter((p) => { //Crea nueva
                 return p.pid !== productID
             });
-            await fs.promises.writeFile(this.#path, JSON.stringify(updatedProducts)); //Crear archivo JSON con string del objeto base.
+            await fs.promises.writeFile(this.#path, JSON.stringify(updatedProducts)); //Crear archivo JSON con string del objeto.
             return updatedProducts;
         } catch (e) {
             return console.log((`ERROR: ¡No existe el producto con ID ${productID}!`));

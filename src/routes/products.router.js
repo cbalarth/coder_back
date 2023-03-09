@@ -6,11 +6,11 @@ const productsRouter = express.Router();
 
 //LECTURA GENERAL PRODUCTOS
 productsRouter.get("/", async (req, res) => {
-    const products = await manager.getProducts();
+    const products = await manager.getProducts(); //Inicia lectura general.
+
     const {limit} = req.query;
     const productsLimited = products.slice(0, Number(limit));
-
-    if(limit) {
+    if(limit) { //Si hay Query para limitar cantidad de resultados.
         return res.status(201).send({data:productsLimited});
     }
 
@@ -20,9 +20,9 @@ productsRouter.get("/", async (req, res) => {
 //LECTURA PRODUCTO x PID
 productsRouter.get("/:pid", async (req, res) => {
     const productID = Number(req.params.pid);
-    const product = await manager.getProductById(productID);
+    const product = await manager.getProductById(productID); //Inicia lectura específica.
 
-    if(!product){
+    if(!product){ //Si no existe el producto con ese ID.
         return res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
     }
 
@@ -43,7 +43,7 @@ productsRouter.post("/", async (req, res) => {
     } = req.body;
 
 
-    if(!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.stock || !req.body.category){
+    if(!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.stock || !req.body.category){ //Si falta alguno de los campos obligatorios.
         return res.status(401).send({error:"¡Missing parameters!"});
     }
 
@@ -62,8 +62,8 @@ productsRouter.post("/", async (req, res) => {
     );
 
     products = await manager.getProducts(); //Actualiza lectura general.
-    const indexOfNewProduct = products.findIndex((p) => p.pid == index);
-    res.status(201).send({data: products[indexOfNewProduct]});
+    const product = await manager.getProductById(index); //Inicia lectura específica.
+    res.status(201).send({data: product});
 });
 
 //MODIFICAR x PID
@@ -71,7 +71,7 @@ productsRouter.put("/:pid", async (req, res) => {
     const productID = Number(req.params.pid);
     let product = await manager.getProductById(productID); //Inicia lectura específica.
 
-    if(!product){
+    if(!product){ //Si no existe el producto con ese ID.
         return res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
     }
     

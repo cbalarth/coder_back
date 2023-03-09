@@ -6,11 +6,11 @@ const cartsRouter = express.Router();
 
 //LECTURA GENERAL CARRITOS
 cartsRouter.get("/", async (req, res) => {
-    const carts = await manager.getCarts();
+    const carts = await manager.getCarts(); //Inicia lectura general.
+
     const {limit} = req.query;
     const cartsLimited = carts.slice(0, Number(limit));
-
-    if(limit) {
+    if(limit) { //Si hay Query para limitar cantidad de resultados.
         return res.status(201).send({data:cartsLimited});
     }
 
@@ -20,9 +20,9 @@ cartsRouter.get("/", async (req, res) => {
 //LECTURA CARRITO x CID
 cartsRouter.get("/:cid", async (req, res) => {
     const cartID = Number(req.params.cid);
-    const cart = await manager.getCartById(cartID);
+    const cart = await manager.getCartById(cartID); //Inicia lectura específica.
 
-    if(!cart){
+    if(!cart){ //Si no existe el carrito con ese ID.
         return res.status(401).send({error: `¡No existe el carrito con ID ${cartID}!`});
     }
 
@@ -36,7 +36,7 @@ cartsRouter.post("/", async (req, res) => {
     } = req.body;
 
 
-    if(!req.body.products){
+    if(!req.body.products){ //Si falta alguno de los campos obligatorios.
         return res.status(401).send({error:"¡Missing parameters!"});
     }
 
@@ -48,8 +48,8 @@ cartsRouter.post("/", async (req, res) => {
     );
 
     carts = await manager.getCarts(); //Actualiza lectura general.
-    const indexOfNewCart = carts.findIndex((c) => c.cid == index);
-    res.status(201).send({data: carts[indexOfNewCart]});
+    const cart = await manager.getCartById(index); //Inicia lectura específica.
+    res.status(201).send({data: cart});
 });
 
 //AGREGAR PRODUCTO EN CARRITO x CID + PID
@@ -58,7 +58,7 @@ cartsRouter.put("/:cid/product/:pid", async (req, res) => {
     const productID = req.params.pid;
     
     let cart = await manager.getCartById(cartID); //Inicia lectura específica.
-    if(!cart){
+    if(!cart){ //Si no existe el carrito con ese ID.
         return res.status(401).send({error: `¡No existe el carrito con ID ${cartID}!`});
     }
 
