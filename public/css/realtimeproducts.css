@@ -1,0 +1,26 @@
+body{
+    background-color: aqua;
+}
+
+h1{
+    margin: 10px;
+}
+
+p{
+    margin: 0px;
+}
+
+ul{
+    list-style-position: inside;
+}
+
+#productsList{
+    border: 2px dashed red;
+    padding: 0px;
+    margin: 0px;
+}
+
+.product{
+    border: 2px dashed white;
+    margin: 10px;
+}

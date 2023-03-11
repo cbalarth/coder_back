@@ -1,0 +1,23 @@
+{{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
+<div id="titleContainer">
+    <h1>PRODUCTS</h1>
+    <p>HELLO FROM INDEX.HANDLEBARS</p>
+</div>
+
+<div id="productsContainer">
+    <ul id="productsList">
+        {{#each products}}
+            <div class="product">
+                <h2><strong>{{title}}</strong></h2>
+                <li>Product ID: {{pid}}</li>
+                <li>Code: {{code}}</li>
+                <li>Price: ${{price}}</li>
+                <li>Stock: {{stock}}</li>
+                <li>Category: {{category}}</li>
+            </div>
+        {{/each}}
+    </ul>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
