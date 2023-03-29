@@ -1,8 +1,8 @@
-import productManager from "../components/productManager.js";
-import express from "express";
+import {Router} from "express";
+import {productManager} from "../../dao/index.js";
 
+const productsRouter = Router();
 const manager = new productManager();
-const productsRouter = express.Router();
 
 //LECTURA GENERAL PRODUCTOS
 productsRouter.get("/", async (req, res) => {

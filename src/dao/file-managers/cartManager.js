@@ -1,7 +1,8 @@
 import fs from "fs";
+import {__dirname} from "../../utils.js";
 
 class cartManager {
-    #path = "./carts.json";
+    #path = __dirname + "/dao/file-managers/files/carts.json";
 
     async getCarts() {
         try {

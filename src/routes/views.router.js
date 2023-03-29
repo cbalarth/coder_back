@@ -1,18 +1,19 @@
 import {Router} from "express";
-import productManager from "../components/productManager.js";
+import {productManager} from "../dao/index.js";
+// import productModel from "../dao/models/productModel.js"; //Verificar si se necesita!!!
 
 const viewsRouter = Router();
 const manager = new productManager();
-const products = await manager.getProducts(); //Inicia lectura general.
 
-viewsRouter.get("/", (req, res) => {
+// RENDER PRODUCTOS
+viewsRouter.get("/", async (req, res) => {
+    const products = await manager.getProducts(); //Inicia lectura general.
     res.render("index", {products, style: "index"}); //Para renderizar contenido.
-    // res.send(products);
 });
 
+// RENDER PRODUCTOS EN VIVO
 viewsRouter.get("/realtimeproducts", (req, res) => {
     res.render("realtimeproducts", {style: "realtimeproducts"}); //Para renderizar contenido.
-    // res.send(products);
 });
 
 export default viewsRouter;

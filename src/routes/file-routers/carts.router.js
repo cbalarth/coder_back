@@ -1,8 +1,8 @@
-import cartManager from "../components/cartManager.js";
-import express from "express";
+import {Router} from "express";
+import {cartManager} from "../../dao/index.js";
 
+const cartsRouter = Router();
 const manager = new cartManager();
-const cartsRouter = express.Router();
 
 //LECTURA GENERAL CARRITOS
 cartsRouter.get("/", async (req, res) => {
