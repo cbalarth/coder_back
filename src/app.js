@@ -6,6 +6,7 @@ import {Server} from "socket.io";
 import mongoose from "mongoose";
 import viewsRouter from "./routes/views.router.js";
 import productManager from "./dao/file-managers/productManager.js";
+import chatManager from "./dao/db-managers/chatManager.js";
 
 //CONDITIONAL IMPORTS
 import {config} from "./dao/index.js" //Returns persistenceType ("db" or "file").
@@ -43,17 +44,33 @@ const httpServer = app.listen(8080, () => {
     console.log("Server Listening - Port 8080");
 });
 
+const chat = new chatManager();
 // SOCKET SERVER
 const socketServer = new Server(httpServer);
-socketServer.on("connection", (socket) => {
+socketServer.on("connection", async (socket) => {
     console.log("New Client Connected");
+
+    let messages = await chat.getMessages();
 
     socket.on("eventFront", (data) => {
         console.log(data);
     });
+
+    //REAL TIME CHAT
+    socket.on("message", (data) => {
+        messages.push(data);
+        socketServer.emit("messages", messages);
+
+        chat.saveMessage(data);
+    });
+
+    socket.on("newUser", (user) => {
+        socket.emit("messages", messages);
+        socket.broadcast.emit("newUser", user);
+    });
 });
 
-// REAL TIME PRODUCTS UPDATE (Only for "file").
+// REAL TIME PRODUCTS UPDATE (Only for "file" model.).
 const manager = new productManager();
 const products = await manager.getProducts();
 setInterval(() => {
