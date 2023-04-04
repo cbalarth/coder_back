@@ -6,18 +6,34 @@
 
 <div id="productsContainer">
     <ul id="productsList">
-        {{#each products}}
+        {{#each products.docs}}
             <div class="product">
-                <h2><strong>{{title}}</strong></h2>
-                <li>Product ID (file): {{pid}}</li>
-                <li>Product ID (db): {{_id}}</li>
-                <li>Code: {{code}}</li>
-                <li>Price: ${{price}}</li>
-                <li>Stock: {{stock}}</li>
-                <li>Category: {{category}}</li>
+                <h2><strong>{{this.title}}</strong></h2>
+                <li>Product ID (file): {{this.pid}}</li>
+                <li>Product ID (db): {{this._id}}</li>
+                <li>Code: {{this.code}}</li>
+                <li>Price: ${{this.price}}</li>
+                <li>Stock: {{this.stock}}</li>
+                <li>Category: {{this.category}}</li>
             </div>
         {{/each}}
     </ul>
+</div>
+
+<div>
+    {{!-- CONDICIONAL SI HAY PÁGINA ANTERIOR --}}
+    {{#if products.hasPrevPage}}
+        <a id="prevURL" href="/?limit={{limit}}&page={{products.prevPage}}{{#if sort}}&sort={{sort}}{{/if}}">Anterior</a>
+        
+    {{/if}}
+
+    {{!-- CONTADOR DE PÁGINA --}}
+    <span>Página {{products.page}} de {{products.totalPages}}</span>
+
+    {{!-- CONDICIONAL SI HAY PÁGINA POSTERIOR --}}
+    {{#if products.hasNextPage}}
+        <a id="nextURL" href="/?limit={{limit}}&page={{products.nextPage}}{{#if sort}}&sort={{sort}}{{/if}}">Siguiente</a>
+    {{/if}}
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

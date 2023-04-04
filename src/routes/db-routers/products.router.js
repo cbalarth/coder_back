@@ -6,13 +6,24 @@ const manager = new productManager();
 
 //LECTURA GENERAL PRODUCTOS
 productsRouter.get("/", async (req, res) => {
-    const products = await manager.getProducts(); //Inicia lectura general.
+    const {page} = parseInt(req.query);
+    const products = await manager.getProducts(page); //Inicia lectura general.
 
-    const {limit} = req.query;
-    const productsLimited = products.slice(0, Number(limit));
-    if(limit) { //Si hay Query para limitar cantidad de resultados.
-        return res.status(201).send({data:productsLimited});
-    }
+    // const {limit} = req.query;
+    // const productsLimited = products.slice(0, Number(limit));
+    // if(limit) { //Si hay Query para limitar cantidad de resultados.
+    //     return res.status(201).send({data:productsLimited});
+    // }
+
+    // const {page} = req.query;
+    // products.paginate(
+    //     {},
+    //     {
+    //       limit: 1, //Cantidad de items a mostrar.
+    //       lean: true, //Para compatbilidad con Handlebars.
+    //       page: page ?? 1, //Página indicada por el Query, sino toma por default la página 1.
+    //     }
+    // );
 
     res.status(201).send({data:products});
 });

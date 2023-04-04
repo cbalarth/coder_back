@@ -7,8 +7,11 @@ const manager = new productManager();
 
 // RENDER PRODUCTOS
 viewsRouter.get("/", async (req, res) => {
-    const products = await manager.getProducts(); //Inicia lectura general.
-    res.render("index", {products, style: "index"}); //Para renderizar contenido.
+    const {limit} = req.query;
+    const {page} = req.query;
+    const {sort} = req.query;
+    const products = await manager.getProducts(limit, page, sort); //Inicia lectura general.
+    res.render("index", {products, limit, sort, style: "index"}); //Para renderizar contenido.
 });
 
 // RENDER PRODUCTOS EN VIVO

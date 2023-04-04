@@ -5,8 +5,27 @@ export default class productManager {
         console.log("Working with products using database.");
     }
 
-    getProducts = async () => {
-        const result = await productModel.find().lean();
+    getProducts = async (limit, page, sort) => {
+
+        let aggregateConfig;
+        if(sort === "desc") {
+        aggregateConfig = [
+                {$sort: {price: -1}},
+            ];
+        } else if (sort === "asc") {
+            aggregateConfig = [
+                {$sort: {price: 1}},
+            ];
+        }
+
+        const aggregation = productModel.aggregate(aggregateConfig);
+        const paginateConfig = {
+            limit: limit ?? 10, //Cantidad de items a mostrar.
+            lean: true, //Para compatbilidad con Handlebars.
+            page: page ?? 1, //Página indicada por el Query, sino toma por default la página 1.
+        };
+        const result = await productModel.aggregatePaginate(aggregation, paginateConfig);
+
         return result;
     };
 
