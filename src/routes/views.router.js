@@ -13,11 +13,9 @@ viewsRouter.get("/", async (req, res) => {
 
 // RENDER PRODUCTOS
 viewsRouter.get("/products", async (req, res) => {
-    const {limit} = req.query;
-    const {page} = req.query;
-    const {sort} = req.query;
-    const products = await pManager.getProducts(limit, page, sort); //Lectura general de productos.
-    res.render("products", {products, limit : (limit ? limit : 10), sort, style: "products"}); //Para renderizar contenido.
+    const {limit, page, sort, category, status} = req.query;
+    const products = await pManager.getProducts(limit, page, sort, category, status); //Lectura general de productos.
+    res.render("products", {products, limit : (limit ? limit : 10), sort, category, status, style: "products"}); //Para renderizar contenido.
 });
 
 // RENDER PRODUCTO X PID (POR MEJORAR, AÚN NO HACE RENDER)

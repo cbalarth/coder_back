@@ -6,29 +6,11 @@ const manager = new productManager();
 
 //LECTURA GENERAL PRODUCTOS
 productsRouter.get("/", async (req, res) => {
-    const {limit} = req.query;
-    const {page} = req.query;
-    const {sort} = req.query;
-    const products = await manager.getProducts(limit, page, sort); //Inicia lectura general.
-
-    // const {limit} = req.query;
-    // const productsLimited = products.slice(0, Number(limit));
-    // if(limit) { //Si hay Query para limitar cantidad de resultados.
-    //     return res.status(201).send({data:productsLimited});
-    // }
-
-    // const {page} = req.query;
-    // products.paginate(
-    //     {},
-    //     {
-    //       limit: 1, //Cantidad de items a mostrar.
-    //       lean: true, //Para compatbilidad con Handlebars.
-    //       page: page ?? 1, //Página indicada por el Query, sino toma por default la página 1.
-    //     }
-    // );
+    const {limit, page, sort, category, status} = req.query;
+    const products = await manager.getProducts(limit, page, sort, category, status); //Inicia lectura general.
 
     res.status(201).send({
-        status: "success",
+        status: "Success",
         payload: products.docs,
         totalPages: products.totalPages,
         prevPage: products.prevPage,
@@ -46,9 +28,15 @@ productsRouter.get("/:pid", async (req, res) => {
     
     try {
         const product = await manager.getProductById(productID); //Inicia lectura específica.
-        res.status(201).send({data: product});
+        res.status(201).send({
+            status: "Success",
+            data: product,
+        });
     } catch {
-        res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
+        res.status(401).send({
+            status: `Error: ¡No existe el producto con ID ${productID}!`,
+            data: [],
+        });
     }
 
 });
@@ -73,9 +61,15 @@ productsRouter.post("/", async (req, res) => {
             stock,
             category,
         });
-        res.status(201).send({data: newProduct});
-    } catch(err) {
-        res.status(401).send(err.message);
+        res.status(201).send({
+            status: "Success",
+            data: newProduct,
+        });
+    } catch {
+        res.status(401).send({
+            status: "Error: ¡Parámetros no válidos o faltantes!",
+            data: [],
+        });
     }
 
 });
@@ -85,10 +79,16 @@ productsRouter.put("/:pid", async (req, res) => {
     const productID = req.params.pid;
 
     try {
-        let updatedProduct = await manager.updateProduct(productID, req.body);
-        res.status(201).send({data: updatedProduct});
+        const updatedProduct = await manager.updateProduct(productID, req.body);
+        res.status(201).send({
+            status: "Success",
+            data: updatedProduct,
+        });
     } catch(err) {
-        res.status(401).send(err.message);
+        res.status(401).send({
+            status: `Error: ${err.message}`,
+            data: [],
+        });
     }
 });
 
@@ -96,10 +96,16 @@ productsRouter.put("/:pid", async (req, res) => {
 productsRouter.delete("/:pid", async (req, res) => {
     const productID = req.params.pid;
     try {
-        let deletion = await manager.deleteProduct(productID);
-        res.status(201).send({data: deletion});
+        const deletion = await manager.deleteProduct(productID);
+        res.status(201).send({
+            status: "Success",
+            data: deletion,
+        });
     } catch {
-        res.status(401).send({error: `¡No existe el producto con ID ${productID}!`});
+        res.status(401).send({
+            status: `Error: ¡No existe el producto con ID ${productID}!`,
+            data: [],
+        });
     }
 });
 

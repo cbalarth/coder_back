@@ -1,11 +1,11 @@
-import {cartManager} from "./dao/index.js";
-const manager = new cartManager();
+import cartManager from "./dao/db-managers/cartManager.js";
 
+const cManager = new cartManager();
 const agregarProductoCarrito = document.getElementById('action2');
 
 agregarProductoCarrito.addEventListener('click', async () => {
-    const newCart = await manager.addCart({
+    const newCart = await cManager.addCart({
         products: [],
     });
-    console.log("Carrito agregado:", newCart);
+    console.log("Carrito Agregado:", newCart);
 });

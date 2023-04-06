@@ -8,21 +8,14 @@ import viewsRouter from "./routes/views.router.js";
 import productManager from "./dao/file-managers/productManager.js";
 import chatManager from "./dao/db-managers/chatManager.js";
 
-
 //CONDITIONAL IMPORTS
 import {config} from "./dao/index.js" //Returns persistenceType ("db" or "file").
 import DbProductsRouter from "./routes/db-routers/products.router.js";
 import DbCartsRouter from "./routes/db-routers/carts.router.js";
 import FileProductsRouter from "./routes/file-routers/products.router.js";
 import FileCartsRouter from "./routes/file-routers/carts.router.js";
-let productsRouter, cartsRouter;
-if (config.persistenceType === "db"){
-    productsRouter = DbProductsRouter;
-    cartsRouter = DbCartsRouter;
-} else if (config.persistenceType === "file") {
-    productsRouter = FileProductsRouter;
-    cartsRouter = FileCartsRouter;
-}
+const productsRouter = config.persistenceType === "db" ? DbProductsRouter : FileProductsRouter;
+const cartsRouter = config.persistenceType === "db" ? DbCartsRouter : FileCartsRouter;
 
 // EXPRESS
 const app = express();
@@ -46,9 +39,10 @@ const httpServer = app.listen(8080, () => {
     console.log("Server Listening - Port 8080");
 });
 
-const chat = new chatManager();
 // SOCKET SERVER
+const chat = new chatManager();
 const socketServer = new Server(httpServer);
+
 socketServer.on("connection", async (socket) => {
     console.log("New Client Connected");
 
@@ -59,11 +53,11 @@ socketServer.on("connection", async (socket) => {
     });
 
     //REAL TIME CHAT
-    socket.on("message", (data) => {
+    socket.on("message", async (data) => {
         messages.push(data);
         socketServer.emit("messages", messages);
 
-        chat.saveMessage(data);
+        await chat.saveMessage(data);
     });
 
     socket.on("newUser", (user) => {
@@ -73,8 +67,8 @@ socketServer.on("connection", async (socket) => {
 });
 
 // REAL TIME PRODUCTS UPDATE (Only for "file" model.).
-const manager = new productManager();
-const products = await manager.getProducts();
+const pManager = new productManager();
+const products = await pManager.getProducts();
 setInterval(() => {
     socketServer.emit("productsUpdated", products);
 }, 1000);

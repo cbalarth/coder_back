@@ -5,38 +5,40 @@ export default class cartManager {
         console.log("Working with carts using database.");
     }
 
+    //GET CARTS
     getCarts = async () => {
         const result = await cartModel.find().lean();
         return result;
     };
 
+    //ADD CART
     addCart = async (newCart) => {
         const result = await cartModel.create(newCart);
         return result;
     };
 
+    //GET CART BY CID
     getCartById = async (cartID) => {
-        const result = await cartModel.findOne({_id: cartID}).lean();
+        const result = await cartModel.findOne({_id: cartID}).lean(); //Inicia lectura específica.
         return result;
     };
     
-    updateCart = async (cartID, productID, updatedCart) => {
-        let cart = await cartModel.findOne({_id: cartID},).lean();
-        let validation1 = await cartModel.findOne({_id: cartID}).lean();
-        let validation2 = await cartModel.findOne({_id: cartID, "products.productCode": productID}).lean();
+    //UPDATE CART BY CID (MODIFY 1 PRODUCT QUANTITY or ADD 1 NEW PRODUCT)
+    updateCartUnitaryProduct = async (cartID, productID, updatedCart) => {
+        let validation1 = await cartModel.findOne({_id: cartID}).lean(); //Valida si el carrito existe.
+        let validation2 = await cartModel.findOne({_id: cartID, "products.productCode": productID}).lean(); //Valida si el carrito existe y ya tiene el producto.
 
+        //MODIFY 1 PRODUCT QUANTITY
         if(validation2){
-            let index = Number(cart.products.findIndex((p) => p.productCode == productID));
-            let currentQ = cart.products[index].productQuantity;
-            const result = await cartModel.updateOne(
+            const result = await cartModel.findOneAndUpdate(
                 {_id: cartID, "products.productCode": productID},
-                {$set: {"products.$.productQuantity": currentQ+updatedCart}},
+                {$inc: {"products.$.productQuantity": updatedCart}},
                 {new: true}
                 ).lean();
-            cart = await cartModel.findOne({_id: cartID}).lean();
-            return cart;
+            return result;
+        //ADD 1 NEW PRODUCT
         } else if (validation1){
-            const result = await cartModel.updateOne(
+            const result = await cartModel.findOneAndUpdate(
                 {_id: cartID},
                 {$push: {products: {
                     productCode: productID,
@@ -44,18 +46,17 @@ export default class cartManager {
                 }}},
                 {new: true}
                 ).lean();
-            cart = await cartModel.findOne({_id: cartID}).lean();
-            return cart;
+            return result;
         }
     };
 
+    //DELETE PRODUCTS FROM CART BY CID
     emptyCartById = async (cartID) => {
-        const result = await cartModel.updateOne(
+        const result = await cartModel.findOneAndUpdate(
             {_id: cartID},
             {$set: {"products": []}},
             {new: true}
             ).lean();
-        let cart = await cartModel.findOne({_id: cartID}).lean();
-        return cart;
+        return result;
     };
 };

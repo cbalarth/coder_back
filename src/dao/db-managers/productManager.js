@@ -5,17 +5,25 @@ export default class productManager {
         console.log("Working with products using database.");
     }
 
-    getProducts = async (limit, page, sort) => {
+    //GET PRODUCTS
+    getProducts = async (limit, page, sort, category, status) => {
 
-        let aggregateConfig;
+        let aggregateConfig = [];
+
         if(sort === "desc") {
-        aggregateConfig = [
-                {$sort: {price: -1}},
-            ];
+            aggregateConfig.push({$sort: {price: -1}});
         } else if (sort === "asc") {
-            aggregateConfig = [
-                {$sort: {price: 1}},
-            ];
+            aggregateConfig.push({$sort: {price: 1}});
+        }
+
+        if (category) {
+            aggregateConfig.push({$match: {category: category}});
+        }
+
+        if (status === "1") {
+            aggregateConfig.push({$match: {status: true}});
+        } else if (status === "0") {
+            aggregateConfig.push({$match: {status: false}});
         }
 
         const aggregation = productModel.aggregate(aggregateConfig);
@@ -24,21 +32,24 @@ export default class productManager {
             lean: true, //Para compatbilidad con Handlebars.
             page: page ?? 1, //Página indicada por el Query, sino toma por default la página 1.
         };
-        const result = await productModel.aggregatePaginate(aggregation, paginateConfig);
+        const result = await productModel.aggregatePaginate(aggregation, paginateConfig); //Inicia lectura general.
 
         return result;
     };
 
+    //ADD PRODUCT
     addProduct = async (newProduct) => {
         const result = await productModel.create(newProduct);
         return result;
     };
 
+    //GET PRODUCT BY PID
     getProductById = async (productID) => {
-        const result = await productModel.findOne({_id: productID}).lean();
+        const result = await productModel.findOne({_id: productID}).lean(); //Inicia lectura específica.
         return result;
     };
     
+    //UPDATE PRODUCT
     updateProduct = async (productID, updatedProduct) => {
         const result = await productModel.findOneAndUpdate(
             {_id: productID},
@@ -48,8 +59,8 @@ export default class productManager {
         return result;
     };
     
-
-    deleteProduct = async (productID, updatedProduct) => {
+    //DELETE PRODUCT BY PID
+    deleteProduct = async (productID) => {
         const result = await productModel.deleteOne({_id: productID});
         return result;
     };

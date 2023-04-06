@@ -6,9 +6,17 @@
 
 <div id="productsContainer">
     <div if="filters">
-        <a href="/products?limit={{limit}}&sort=asc&page=1"><button>Ordenar por Precio (Menor a Mayor)</button></a>
-        <a href="/products?limit={{limit}}&sort=desc&page=1"><button>Ordenar por Precio (Mayor a Menor)</button></a>
+        <a href="/products?limit={{limit}}&sort=asc{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page=1"><button>Ordenar por Precio (Menor a Mayor)</button></a>
+        <a href="/products?limit={{limit}}&sort=desc{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page=1"><button>Ordenar por Precio (Mayor a Menor)</button></a><br><br>
+        <a href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&status=1{{#if category}}&category={{category}}{{/if}}&page=1"><button>Status "True"</button></a>
+        <a href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&status=0{{#if category}}&category={{category}}{{/if}}&page=1"><button>Status "False"</button></a><br><br>
+        <select required id="categoria">
+            <option value="cat01">cat01</option>
+            <option value="cat02">cat02</option>
+        </select>
+        <button onclick='location.href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}&category=" + document.getElementById("categoria").value + "&page=1"'>Filtrar por Categoría</button>
     </div><br>
+
     <div id="productsList">
         {{#each products.docs}}
             <div class="product">
@@ -33,7 +41,7 @@
 <div>
     {{!-- CONDICIONAL SI HAY PÁGINA ANTERIOR --}}
     {{#if products.hasPrevPage}}
-        <a id="prevURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&page={{products.prevPage}}">Anterior</a>
+        <a id="prevURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page={{products.prevPage}}">Anterior</a>
         
     {{/if}}
 
@@ -42,7 +50,7 @@
 
     {{!-- CONDICIONAL SI HAY PÁGINA POSTERIOR --}}
     {{#if products.hasNextPage}}
-        <a id="nextURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&page={{products.nextPage}}">Siguiente</a>
+        <a id="nextURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page={{products.nextPage}}">Siguiente</a>
     {{/if}}
 </div>
 
