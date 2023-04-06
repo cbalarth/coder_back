@@ -14,7 +14,10 @@ cartsRouter.get("/", async (req, res) => {
         return res.status(201).send({data:cartsLimited});
     }
 
-    res.status(201).send({data:carts});
+    res.status(201).send({
+        status: "success",
+        payload: carts,
+    });
 });
 
 //LECTURA CARRITO x PID
@@ -50,6 +53,18 @@ cartsRouter.put("/:cid/product/:pid", async (req, res) => {
 
     try {
         let updatedCart = await manager.updateCart(cartID, productID, req.body.productQuantity);
+        res.status(201).send({data: updatedCart});
+    } catch(err) {
+        res.status(401).send(err.message);
+    }
+});
+
+//VACIAR x CID
+cartsRouter.delete("/:cid", async (req, res) => {
+    const cartID = req.params.cid;
+
+    try {
+        let updatedCart = await manager.emptyCartById(cartID);
         res.status(201).send({data: updatedCart});
     } catch(err) {
         res.status(401).send(err.message);

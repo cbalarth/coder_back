@@ -1,0 +1,50 @@
+{{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
+<div id="titleContainer">
+    <a href="/products"><h1>PRODUCTS</h1></a>
+    <p>HELLO FROM INDEX.HANDLEBARS</p>
+</div><br>
+
+<div id="productsContainer">
+    <div if="filters">
+        <a href="/products?limit={{limit}}&sort=asc&page=1"><button>Ordenar por Precio (Menor a Mayor)</button></a>
+        <a href="/products?limit={{limit}}&sort=desc&page=1"><button>Ordenar por Precio (Mayor a Menor)</button></a>
+    </div><br>
+    <div id="productsList">
+        {{#each products.docs}}
+            <div class="product">
+                <h2><strong>{{this.title}}</strong></h2>
+                <ul>
+                    <li>Product ID (file): {{this.pid}}</li>
+                    <li>Product ID (db): {{this._id}}</li>
+                    <li>Code: {{this.code}}</li>
+                    <li>Price: ${{this.price}}</li>
+                    <li>Stock: {{this.stock}}</li>
+                    <li>Category: {{this.category}}</li>
+                </ul>
+                <div id="actions">
+                    <a href="/products/{{this._id}}" id="action1"><button>Ver Producto</button></a>
+                    <button id="action2">Agregar a Carrito</button>
+                </div><br>
+            </div>
+        {{/each}}
+    </div>
+</div>
+
+<div>
+    {{!-- CONDICIONAL SI HAY PÁGINA ANTERIOR --}}
+    {{#if products.hasPrevPage}}
+        <a id="prevURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&page={{products.prevPage}}">Anterior</a>
+        
+    {{/if}}
+
+    {{!-- CONTADOR DE PÁGINA --}}
+    <span>Página {{products.page}} de {{products.totalPages}}</span>
+
+    {{!-- CONDICIONAL SI HAY PÁGINA POSTERIOR --}}
+    {{#if products.hasNextPage}}
+        <a id="nextURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&page={{products.nextPage}}">Siguiente</a>
+    {{/if}}
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/products.js"></script>

@@ -23,13 +23,13 @@ export default class cartManager {
     updateCart = async (cartID, productID, updatedCart) => {
         let cart = await cartModel.findOne({_id: cartID},).lean();
         let validation1 = await cartModel.findOne({_id: cartID}).lean();
-        let validation2 = await cartModel.findOne({_id: cartID, "products.productCode": Number(productID)}).lean();
+        let validation2 = await cartModel.findOne({_id: cartID, "products.productCode": productID}).lean();
 
         if(validation2){
-            let index = Number(cart.products.findIndex((p) => p.productCode == Number(productID)));
+            let index = Number(cart.products.findIndex((p) => p.productCode == productID));
             let currentQ = cart.products[index].productQuantity;
             const result = await cartModel.updateOne(
-                {_id: cartID, "products.productCode": Number(productID)},
+                {_id: cartID, "products.productCode": productID},
                 {$set: {"products.$.productQuantity": currentQ+updatedCart}},
                 {new: true}
                 ).lean();
@@ -39,7 +39,7 @@ export default class cartManager {
             const result = await cartModel.updateOne(
                 {_id: cartID},
                 {$push: {products: {
-                    productCode: Number(productID),
+                    productCode: productID,
                     productQuantity: updatedCart,
                 }}},
                 {new: true}
@@ -47,5 +47,15 @@ export default class cartManager {
             cart = await cartModel.findOne({_id: cartID}).lean();
             return cart;
         }
+    };
+
+    emptyCartById = async (cartID) => {
+        const result = await cartModel.updateOne(
+            {_id: cartID},
+            {$set: {"products": []}},
+            {new: true}
+            ).lean();
+        let cart = await cartModel.findOne({_id: cartID}).lean();
+        return cart;
     };
 };

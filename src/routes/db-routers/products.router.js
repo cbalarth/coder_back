@@ -6,8 +6,10 @@ const manager = new productManager();
 
 //LECTURA GENERAL PRODUCTOS
 productsRouter.get("/", async (req, res) => {
-    const {page} = parseInt(req.query);
-    const products = await manager.getProducts(page); //Inicia lectura general.
+    const {limit} = req.query;
+    const {page} = req.query;
+    const {sort} = req.query;
+    const products = await manager.getProducts(limit, page, sort); //Inicia lectura general.
 
     // const {limit} = req.query;
     // const productsLimited = products.slice(0, Number(limit));
@@ -25,7 +27,17 @@ productsRouter.get("/", async (req, res) => {
     //     }
     // );
 
-    res.status(201).send({data:products});
+    res.status(201).send({
+        status: "success",
+        payload: products.docs,
+        totalPages: products.totalPages,
+        prevPage: products.prevPage,
+        nextPage: products.nextPage,
+        hasPrevPage: products.hasPrevPage,
+        hasNextPage: products.hasNextPage,
+        prevLink: products.hasPrevPage ? `http://localhost:8080/api/products?`+(limit ? `limit=${limit}&` : "")+(sort ? `sort=${sort}&` : "")+`page=${products.prevPage}` : null,
+        nextLink: products.hasNextPage ? `http://localhost:8080/api/products?`+(limit ? `limit=${limit}&` : "")+(sort ? `sort=${sort}&` : "")+`page=${products.nextPage}` : null,
+    });
 });
 
 //LECTURA PRODUCTO x PID
@@ -80,7 +92,7 @@ productsRouter.put("/:pid", async (req, res) => {
     }
 });
 
-//ELIMINAR x ID
+//ELIMINAR x PID
 productsRouter.delete("/:pid", async (req, res) => {
     const productID = req.params.pid;
     try {
