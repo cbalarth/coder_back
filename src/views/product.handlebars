@@ -1,0 +1,40 @@
+{{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
+<h1>PRODUCT {{product._id}}</h1>
+
+<div class="product">
+    <h2><strong>{{product.title}}</strong></h2>
+    <ul>
+        {{!-- <li>Product ID (file): {{this.pid}}</li> --}}
+        <li>Product ID (db): {{product._id}}</li>
+        <li>Description: {{product.description}}</li>
+        <li>Code: {{product.code}}</li>
+        <li>Price: ${{product.price}}</li>
+        <li>Status: {{product.status}}</li>
+        <li>Stock: {{product.stock}}</li>
+        <li>Category: {{product.category}}</li>
+        <li>Thumbnails: {{product.thumbnails}}</li>
+    </ul>
+    <div id="actions">
+        <a href="/products/{{product._id}}"><button class="action1">Ver Producto</button></a>
+        <button class="action2" id="{{{product._id}}}">Agregar a Carrito</button>
+    </div><br>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const botones = document.querySelectorAll('.action2');
+    botones.forEach(boton => {
+        boton.addEventListener('click', (event) => {
+            let productID = event.target.id;
+            console.log(productID);
+
+            Swal.fire({
+                title: `Se ha agregado 1 unidad del producto con ID "${productID}" al carrito.
+                
+                TEST: Funcionalidad no desarrollada.`,
+                toast: true,
+                position: "top-end"
+            });
+        });
+    });
+</script>

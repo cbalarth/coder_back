@@ -19,16 +19,15 @@ viewsRouter.get("/products", async (req, res) => {
 });
 
 // RENDER PRODUCTO X PID (POR MEJORAR, AÚN NO HACE RENDER)
-viewsRouter.get("/", async (req, res) => {
-    res.redirect('/products');
-});
 viewsRouter.get("/products/:pid", async (req, res) => {
     const {pid} = req.params;
     const product = await pManager.getProductById(pid); //Lectura de producto específico.
-    res.send({ //MEJORAR -> En un futuro cambiar por un "render".
-        note: "render en construcción",
-        payload: product,
-    });
+    // res.send({ //MEJORAR -> En un futuro cambiar por un "render".
+    //     note: "render en construcción",
+    //     status: "Success",
+    //     payload: product,
+    // });
+    res.render("product", {product, style: "products"}); //Para renderizar contenido.
 });
 
 // RENDER CARRITOS (POR MEJORAR, AÚN NO HACE RENDER)
@@ -36,18 +35,16 @@ viewsRouter.get("/carts", async (req, res) => {
     const carts = await cManager.getCarts(); //Lectura general de carritos.
     res.send({ //MEJORAR -> En un futuro cambiar por un "render".
         note: "render en construcción",
+        status: "Success",
         payload: carts,
     });
 });
 
-// RENDER CARRITO x CID (POR MEJORAR, AÚN NO HACE RENDER)
+// RENDER CARRITO x CID
 viewsRouter.get("/carts/:cid", async (req, res) => {
     const {cid} = req.params;
     let cartProducts = (await cManager.getCartById(cid)).products; //Lectura general de productos de carrito específico.
-    res.send({ //MEJORAR -> En un futuro cambiar por un "render".
-        note: "render en construcción",
-        payload: cartProducts,
-    });
+    res.render("cart", {cid, cartProducts, style: "products"}); //Para renderizar contenido.
 });
 
 // RENDER PRODUCTOS EN VIVO

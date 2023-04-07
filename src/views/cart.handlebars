@@ -1,0 +1,25 @@
+<h1>CART {{cid}}</h1>
+
+<div id="productsContainer">
+    <div id="productsList">
+        {{#each cartProducts}}
+            <div class="product">
+                <h2><strong>{{productCode.title}}</strong></h2>
+                <ul>
+                    <li>Product ID (db): {{productCode._id}}</li>
+                    <li>Description: {{productCode.description}}</li>
+                    <li>Code: {{productCode.code}}</li>
+                    <li>Price: ${{productCode.price}}</li>
+                    <li>Status: {{productCode.status}}</li>
+                    <li>Stock: {{productCode.stock}}</li>
+                    <li>Category: {{productCode.category}}</li>
+                    <li>Thumbnails: {{productCode.thumbnails}}</li>
+                    <li><strong>Total Quantity: {{productQuantity}}</strong></li>
+                </ul>
+                <div id="actions">
+                    <a href="/products/{{productCode._id}}"><button class="action1">Ver Producto</button></a>
+                </div><br>
+            </div>
+        {{/each}}
+    </div>
+</div>

@@ -1,7 +1,7 @@
 {{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
 <div id="titleContainer">
     <a href="/products"><h1>PRODUCTS</h1></a>
-    <p>HELLO FROM INDEX.HANDLEBARS</p>
+    <p>HELLO FROM PRODUCTS.HANDLEBARS</p>
 </div><br>
 
 <div id="productsContainer">
@@ -22,7 +22,7 @@
             <div class="product">
                 <h2><strong>{{this.title}}</strong></h2>
                 <ul>
-                    <li>Product ID (file): {{this.pid}}</li>
+                    {{!-- <li>Product ID (file): {{this.pid}}</li> --}}
                     <li>Product ID (db): {{this._id}}</li>
                     <li>Code: {{this.code}}</li>
                     <li>Price: ${{this.price}}</li>
@@ -30,8 +30,8 @@
                     <li>Category: {{this.category}}</li>
                 </ul>
                 <div id="actions">
-                    <a href="/products/{{this._id}}" id="action1"><button>Ver Producto</button></a>
-                    <button id="action2">Agregar a Carrito</button>
+                    <a href="/products/{{this._id}}"><button class="action1">Ver Producto</button></a>
+                    <button class="action2" id="{{this._id}}">Agregar a Carrito</button>
                 </div><br>
             </div>
         {{/each}}
@@ -54,5 +54,21 @@
     {{/if}}
 </div>
 
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/products.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const botones = document.querySelectorAll('.action2');
+    botones.forEach(boton => {
+        boton.addEventListener('click', (event) => {
+            let productID = event.target.id;
+            console.log(productID);
+
+            Swal.fire({
+                title: `Se ha agregado 1 unidad del producto con ID "${productID}" al carrito.
+                
+                TEST: Funcionalidad no desarrollada.`,
+                toast: true,
+                position: "top-end"
+            });
+        });
+    });
+</script>

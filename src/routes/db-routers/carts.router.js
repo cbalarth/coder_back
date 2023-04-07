@@ -45,7 +45,7 @@ cartsRouter.get("/:cid", async (req, res) => {
 //AGREGAR CARRITO
 cartsRouter.post("/", async (req, res) => {
     try {
-        const newCart = await manager.addCart({ products: req.body });
+        const newCart = await manager.addCart({products: req.body});
         res.status(201).send({
             status: "Success",
             data: newCart,
@@ -56,7 +56,6 @@ cartsRouter.post("/", async (req, res) => {
             data: [],
         });
     }
-
 });
 
 //AGREGAR 1 PRODUCTO x PID EN CARRITO x CID
