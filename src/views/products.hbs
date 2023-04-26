@@ -1,4 +1,17 @@
 {{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
+
+<div id="userContainer">
+    <b><p>¡Bienvenido {{userEmail}}!</p></b>
+    <p>Nota: Solo ves esta página si iniciaste session localmente o a través de Github.</p>
+</div><br>
+
+{{#if isAdmin}}
+    <div id="adminContainer">
+        <b><p>CONTENEDOR SECRETO DE ADMIN</p></b>
+        <p>Nota: Solo ves este contenedor si iniciaste session con credenciales de Admin.</p>
+    </div><br>
+{{/if}}
+
 <div id="titleContainer">
     <a href="/products"><h1>PRODUCTS</h1></a>
     <p>HELLO FROM PRODUCTS.HANDLEBARS</p>

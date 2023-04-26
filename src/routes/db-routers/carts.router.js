@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {cartManager} from "../../dao/index.js";
+import {cartManager} from "../../config/persistenceConfig.js";
 
 const cartsRouter = Router();
 const manager = new cartManager();

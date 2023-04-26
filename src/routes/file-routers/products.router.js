@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {productManager} from "../../dao/index.js";
+import {productManager} from "../../config/persistenceConfig.js";
 
 const productsRouter = Router();
 const manager = new productManager();

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 //ESQUEMA INICIAL
+// const collectionName = "carts";
 // const cartSchema = new mongoose.Schema({
 //     products: {
 //         type: Array,
@@ -9,6 +10,7 @@ import mongoose from "mongoose";
 // });
 
 //ESQUEMA ACTUAL
+const collectionName = "carts";
 const cartSchema = new mongoose.Schema({
     products: {
         type: [
@@ -33,5 +35,5 @@ cartSchema.pre("findOne", function () {
     this.populate("products.productCode");
 });
 
-const cartModel = mongoose.model("carts", cartSchema);
+const cartModel = mongoose.model(collectionName, cartSchema);
 export default cartModel;

@@ -1,4 +1,4 @@
-//GENERAL IMPORTS
+// GENERAL IMPORTS
 import express, {urlencoded} from "express";
 import {__filename, __dirname} from "./utils.js";
 import {engine} from "express-handlebars";
@@ -7,15 +7,23 @@ import mongoose from "mongoose";
 import viewsRouter from "./routes/views.router.js";
 import productManager from "./dao/file-managers/productManager.js";
 import chatManager from "./dao/db-managers/chatManager.js";
+import {database} from "./config/databaseConfig.js";
 
-//CONDITIONAL IMPORTS
-import {config} from "./dao/index.js" //Returns persistenceType ("db" or "file").
+// SESSIONS & PASSPORT IMPORTS
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import passport from "passport";
+import {initializedPassport} from "./config/passportConfig.js";
+import authRouter from "./routes/db-routers/auth.router.js";
+
+// CONDITIONAL IMPORTS
+import {persistenceConfig} from "./config/persistenceConfig.js" //Returns persistenceType ("db" or "file").
 import DbProductsRouter from "./routes/db-routers/products.router.js";
 import DbCartsRouter from "./routes/db-routers/carts.router.js";
 import FileProductsRouter from "./routes/file-routers/products.router.js";
 import FileCartsRouter from "./routes/file-routers/carts.router.js";
-const productsRouter = config.persistenceType === "db" ? DbProductsRouter : FileProductsRouter;
-const cartsRouter = config.persistenceType === "db" ? DbCartsRouter : FileCartsRouter;
+const productsRouter = persistenceConfig.persistenceType === "db" ? DbProductsRouter : FileProductsRouter;
+const cartsRouter = persistenceConfig.persistenceType === "db" ? DbCartsRouter : FileCartsRouter;
 
 // EXPRESS
 const app = express();
@@ -23,16 +31,6 @@ app.use(express.json());
 app.use(urlencoded({extended: true}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
-
-// HANDLEBARS
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
-app.set("views", __dirname + "/views");
-
-// ROUTERS
-app.use('/', viewsRouter);
-app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter);
 
 // HTTP SERVER
 const httpServer = app.listen(8080, () => {
@@ -75,7 +73,33 @@ setInterval(() => {
 
 // MONGOOSE
 mongoose.connect(
-    "mongodb+srv://cbalart96:mongocoder123@codercluster.jhyle2f.mongodb.net/ecommerce?retryWrites=true&w=majority"
+    database
 ).then((conn) => {
     console.log("Connected to DB.");
 });
+
+// SESSIONS
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: database,
+    }),
+    secret: "claveSecreta",
+    resave: true,
+    saveUninitialized: true
+}));
+
+// PASSPORT
+initializedPassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+// HANDLEBARS
+app.engine("hbs", engine());
+app.set("view engine", "hbs");
+app.set("views", __dirname + "/views");
+
+// ROUTERS
+app.use('/', viewsRouter);
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
+app.use('/api/sessions', authRouter);

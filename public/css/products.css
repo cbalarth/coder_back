@@ -24,3 +24,15 @@ ul{
     border: 2px dashed white;
     margin: 10px;
 }
+
+#userContainer{
+    background-color: blueviolet;
+    color: white;
+    padding: 10px;
+}
+
+#adminContainer{
+    background-color: blueviolet;
+    color: white;
+    padding: 10px;
+}

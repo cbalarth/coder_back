@@ -1,6 +1,6 @@
 import {Router} from "express";
-import {productManager} from "../dao/index.js";
-import {cartManager} from "../dao/index.js";
+import {productManager} from "../config/persistenceConfig.js";
+import {cartManager} from "../config/persistenceConfig.js";
 
 const viewsRouter = Router();
 const pManager = new productManager();
@@ -13,9 +13,16 @@ viewsRouter.get("/", async (req, res) => {
 
 // RENDER PRODUCTOS
 viewsRouter.get("/products", async (req, res) => {
-    const {limit, page, sort, category, status} = req.query;
-    const products = await pManager.getProducts(limit, page, sort, category, status); //Lectura general de productos.
-    res.render("products", {products, limit : (limit ? limit : 10), sort, category, status, style: "products"}); //Para renderizar contenido.
+    console.log(req.user);
+    try{
+        const {limit, page, sort, category, status} = req.query;
+        const products = await pManager.getProducts(limit, page, sort, category, status); //Lectura general de productos.
+        const userEmail = req.user.email;
+        const isAdmin = (req.user.role == "admin");
+        res.render("products", {products, limit : (limit ? limit : 10), sort, category, status, userEmail, isAdmin, style: "products"}); //Para renderizar contenido.
+    } catch (error){
+        res.send(`<div>ERROR: Debes iniciar session para ver los productos.</div>`);
+    }
 });
 
 // RENDER PRODUCTO X PID (POR MEJORAR, AÚN NO HACE RENDER)
@@ -55,6 +62,16 @@ viewsRouter.get("/realtimeproducts", (req, res) => {
 // RENDER CHAT
 viewsRouter.get("/chat", (req, res) => {
     res.render("chat", { style: "chat"}); //Para renderizar contenido.
+});
+
+// RENDER LOCAL SIGNUP
+viewsRouter.get("/api/sessions/signup", (req,res) => {
+    res.render("localSignup");
+});
+
+// RENDER LOCAL LOGIN
+viewsRouter.get("/api/sessions/login", (req,res) => {
+    res.render("localLogin");
 });
 
 export default viewsRouter;
