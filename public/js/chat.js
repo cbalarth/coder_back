@@ -22,14 +22,14 @@ Swal.fire({
 // IDENTIFICA "INPUT MENSAJE" Y LO GUARDA EN "ARRAY MENSAJE"
 const chatInput = document.getElementById("chatInput");
 chatInput.addEventListener("keyup", (ev) => {
-    if (ev.key === "Enter"){
+    if (ev.key === "Enter") {
         const messageInput = chatInput.value;
-        if (messageInput.trim().length > 0){
-            socket.emit("message", {user, message: messageInput});
+        if (messageInput.trim().length > 0) {
+            socket.emit("message", { user, message: messageInput });
             chatInput.value = "";
         }
     }
-}); 
+});
 
 // PROPORCIONA DATOS AL HTML EN BASE AL "OBJETO MENSAJES"
 const chatMessages = document.getElementById("chatMessagesList");

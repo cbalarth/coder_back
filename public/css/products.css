@@ -1,37 +1,37 @@
-body{
+body {
     background-color: aqua;
 }
 
-h1{
+h1 {
     margin: 10px;
 }
 
-p{
+p {
     margin: 0px;
 }
 
-ul{
+ul {
     list-style-position: inside;
 }
 
-#productsList{
+#productsList {
     border: 2px dashed red;
     padding: 0px;
     margin: 0px;
 }
 
-.product{
+.product {
     border: 2px dashed white;
     margin: 10px;
 }
 
-#userContainer{
+#userContainer {
     background-color: blueviolet;
     color: white;
     padding: 10px;
 }
 
-#adminContainer{
+#adminContainer {
     background-color: blueviolet;
     color: white;
     padding: 10px;

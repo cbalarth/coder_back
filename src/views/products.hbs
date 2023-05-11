@@ -1,52 +1,68 @@
 {{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
 
 <div id="userContainer">
-    <b><p>¡Bienvenido {{userEmail}}!</p></b>
+    <b>
+        <p>¡Bienvenido {{userEmail}}!</p>
+    </b>
     <p>Nota: Solo ves esta página si iniciaste session localmente o a través de Github.</p>
 </div><br>
 
 {{#if isAdmin}}
-    <div id="adminContainer">
-        <b><p>CONTENEDOR SECRETO DE ADMIN</p></b>
-        <p>Nota: Solo ves este contenedor si iniciaste session con credenciales de Admin.</p>
-    </div><br>
+<div id="adminContainer">
+    <b>
+        <p>CONTENEDOR SECRETO DE ADMIN</p>
+    </b>
+    <p>Nota: Solo ves este contenedor si iniciaste session con credenciales de Admin.</p>
+</div><br>
 {{/if}}
 
 <div id="titleContainer">
-    <a href="/products"><h1>PRODUCTS</h1></a>
+    <a href="/products">
+        <h1>PRODUCTS</h1>
+    </a>
     <p>HELLO FROM PRODUCTS.HANDLEBARS</p>
 </div><br>
 
 <div id="productsContainer">
     <div if="filters">
-        <a href="/products?limit={{limit}}&sort=asc{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page=1"><button>Ordenar por Precio (Menor a Mayor)</button></a>
-        <a href="/products?limit={{limit}}&sort=desc{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page=1"><button>Ordenar por Precio (Mayor a Menor)</button></a><br><br>
-        <a href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&status=1{{#if category}}&category={{category}}{{/if}}&page=1"><button>Status "True"</button></a>
-        <a href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&status=0{{#if category}}&category={{category}}{{/if}}&page=1"><button>Status "False"</button></a><br><br>
+        <a
+            href="/products?limit={{limit}}&sort=asc{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page=1"><button>Ordenar
+                por Precio (Menor a Mayor)</button></a>
+        <a
+            href="/products?limit={{limit}}&sort=desc{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page=1"><button>Ordenar
+                por Precio (Mayor a Menor)</button></a><br><br>
+        <a
+            href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&status=1{{#if category}}&category={{category}}{{/if}}&page=1"><button>Status
+                "True"</button></a>
+        <a
+            href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}&status=0{{#if category}}&category={{category}}{{/if}}&page=1"><button>Status
+                "False"</button></a><br><br>
         <select required id="categoria">
             <option value="cat01">cat01</option>
             <option value="cat02">cat02</option>
         </select>
-        <button onclick='location.href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}&category=" + document.getElementById("categoria").value + "&page=1"'>Filtrar por Categoría</button>
+        <button
+            onclick='location.href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}&category=" + document.getElementById("categoria").value + "&page=1"'>Filtrar
+            por Categoría</button>
     </div><br>
 
     <div id="productsList">
         {{#each products.docs}}
-            <div class="product">
-                <h2><strong>{{this.title}}</strong></h2>
-                <ul>
-                    {{!-- <li>Product ID (file): {{this.pid}}</li> --}}
-                    <li>Product ID (db): {{this._id}}</li>
-                    <li>Code: {{this.code}}</li>
-                    <li>Price: ${{this.price}}</li>
-                    <li>Stock: {{this.stock}}</li>
-                    <li>Category: {{this.category}}</li>
-                </ul>
-                <div id="actions">
-                    <a href="/products/{{this._id}}"><button class="action1">Ver Producto</button></a>
-                    <button class="action2" id="{{this._id}}">Agregar a Carrito</button>
-                </div><br>
-            </div>
+        <div class="product">
+            <h2><strong>{{this.title}}</strong></h2>
+            <ul>
+                {{!-- <li>Product ID (file): {{this.pid}}</li> --}}
+                <li>Product ID (db): {{this._id}}</li>
+                <li>Code: {{this.code}}</li>
+                <li>Price: ${{this.price}}</li>
+                <li>Stock: {{this.stock}}</li>
+                <li>Category: {{this.category}}</li>
+            </ul>
+            <div id="actions">
+                <a href="/products/{{this._id}}"><button class="action1">Ver Producto</button></a>
+                <button class="action2" id="{{this._id}}">Agregar a Carrito</button>
+            </div><br>
+        </div>
         {{/each}}
     </div>
 </div>
@@ -54,8 +70,9 @@
 <div>
     {{!-- CONDICIONAL SI HAY PÁGINA ANTERIOR --}}
     {{#if products.hasPrevPage}}
-        <a id="prevURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page={{products.prevPage}}">Anterior</a>
-        
+    <a id="prevURL"
+        href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page={{products.prevPage}}">Anterior</a>
+
     {{/if}}
 
     {{!-- CONTADOR DE PÁGINA --}}
@@ -63,7 +80,8 @@
 
     {{!-- CONDICIONAL SI HAY PÁGINA POSTERIOR --}}
     {{#if products.hasNextPage}}
-        <a id="nextURL" href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page={{products.nextPage}}">Siguiente</a>
+    <a id="nextURL"
+        href="/products?limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if status}}&status={{status}}{{/if}}{{#if category}}&category={{category}}{{/if}}&page={{products.nextPage}}">Siguiente</a>
     {{/if}}
 </div>
 

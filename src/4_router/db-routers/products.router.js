@@ -1,12 +1,12 @@
-import {Router} from "express";
-import {productManager} from "../../config/persistenceConfig.js";
+import { Router } from "express";
+import { productManager } from "../../config/persistenceConfig.js";
 
 const productsRouter = Router();
 const manager = new productManager();
 
 //LECTURA GENERAL PRODUCTOS
 productsRouter.get("/", async (req, res) => {
-    const {limit, page, sort, category, status} = req.query;
+    const { limit, page, sort, category, status } = req.query;
     const products = await manager.getProducts(limit, page, sort, category, status); //Inicia lectura general.
 
     res.status(201).send({
@@ -17,15 +17,15 @@ productsRouter.get("/", async (req, res) => {
         nextPage: products.nextPage,
         hasPrevPage: products.hasPrevPage,
         hasNextPage: products.hasNextPage,
-        prevLink: products.hasPrevPage ? `http://localhost:8080/api/products?`+(limit ? `limit=${limit}&` : "")+(sort ? `sort=${sort}&` : "")+`page=${products.prevPage}` : null,
-        nextLink: products.hasNextPage ? `http://localhost:8080/api/products?`+(limit ? `limit=${limit}&` : "")+(sort ? `sort=${sort}&` : "")+`page=${products.nextPage}` : null,
+        prevLink: products.hasPrevPage ? `http://localhost:8080/api/products?` + (limit ? `limit=${limit}&` : "") + (sort ? `sort=${sort}&` : "") + `page=${products.prevPage}` : null,
+        nextLink: products.hasNextPage ? `http://localhost:8080/api/products?` + (limit ? `limit=${limit}&` : "") + (sort ? `sort=${sort}&` : "") + `page=${products.nextPage}` : null,
     });
 });
 
 //LECTURA PRODUCTO x PID
 productsRouter.get("/:pid", async (req, res) => {
     const productID = req.params.pid;
-    
+
     try {
         const product = await manager.getProductById(productID); //Inicia lectura específica.
         res.status(201).send({
@@ -84,7 +84,7 @@ productsRouter.put("/:pid", async (req, res) => {
             status: "Success",
             data: updatedProduct,
         });
-    } catch(err) {
+    } catch (err) {
         res.status(401).send({
             status: `Error: ${err.message}`,
             data: [],

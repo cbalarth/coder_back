@@ -2,7 +2,7 @@ import productModel from "../models/productModel.js";
 
 export default class productManager {
     constructor() {
-        console.log("Working with products using database.");
+        console.log("Working with PRODUCTS using database in MongoDB.");
     }
 
     //GET PRODUCTS
@@ -10,20 +10,20 @@ export default class productManager {
 
         let aggregateConfig = [];
 
-        if(sort === "desc") {
-            aggregateConfig.push({$sort: {price: -1}});
+        if (sort === "desc") {
+            aggregateConfig.push({ $sort: { price: -1 } });
         } else if (sort === "asc") {
-            aggregateConfig.push({$sort: {price: 1}});
+            aggregateConfig.push({ $sort: { price: 1 } });
         }
 
         if (category) {
-            aggregateConfig.push({$match: {category: category}});
+            aggregateConfig.push({ $match: { category: category } });
         }
 
         if (status === "1") {
-            aggregateConfig.push({$match: {status: true}});
+            aggregateConfig.push({ $match: { status: true } });
         } else if (status === "0") {
-            aggregateConfig.push({$match: {status: false}});
+            aggregateConfig.push({ $match: { status: false } });
         }
 
         const aggregation = productModel.aggregate(aggregateConfig);
@@ -45,23 +45,23 @@ export default class productManager {
 
     //GET PRODUCT BY PID
     getProductById = async (productID) => {
-        const result = await productModel.findOne({_id: productID}).lean(); //Inicia lectura específica.
+        const result = await productModel.findOne({ _id: productID }).lean(); //Inicia lectura específica.
         return result;
     };
-    
+
     //UPDATE PRODUCT
     updateProduct = async (productID, updatedProduct) => {
         const result = await productModel.findOneAndUpdate(
-            {_id: productID},
+            { _id: productID },
             updatedProduct,
-            {new: true}
-            ).lean();
+            { new: true }
+        ).lean();
         return result;
     };
-    
+
     //DELETE PRODUCT BY PID
     deleteProduct = async (productID) => {
-        const result = await productModel.deleteOne({_id: productID});
+        const result = await productModel.deleteOne({ _id: productID });
         return result;
     };
 }

@@ -1,16 +1,16 @@
-import {Router} from "express";
-import {cartManager} from "../../config/persistenceConfig.js";
+import { Router } from "express";
+import { cartManager } from "../../config/persistenceConfig.js";
 
 const cartsRouter = Router();
 const manager = new cartManager();
 
 //LECTURA GENERAL CARRITOS
 cartsRouter.get("/", async (req, res) => {
-    const {limit} = req.query;
+    const { limit } = req.query;
     const carts = await manager.getCarts(); //Inicia lectura general.
     const cartsLimited = carts.slice(0, Number(limit));
-    
-    if(limit) { //Si hay Query para limitar cantidad de resultados.
+
+    if (limit) { //Si hay Query para limitar cantidad de resultados.
         return res.status(201).send({
             status: "Success",
             payload: cartsLimited,
@@ -26,7 +26,7 @@ cartsRouter.get("/", async (req, res) => {
 //LECTURA CARRITO x CID
 cartsRouter.get("/:cid", async (req, res) => {
     const cartID = req.params.cid;
-    
+
     try {
         const cart = await manager.getCartById(cartID); //Inicia lectura específica.
         res.status(201).send({
@@ -45,7 +45,7 @@ cartsRouter.get("/:cid", async (req, res) => {
 //AGREGAR CARRITO
 cartsRouter.post("/", async (req, res) => {
     try {
-        const newCart = await manager.addCart({products: req.body});
+        const newCart = await manager.addCart({ products: req.body });
         res.status(201).send({
             status: "Success",
             data: newCart,
@@ -62,7 +62,7 @@ cartsRouter.post("/", async (req, res) => {
 cartsRouter.put("/:cid/product/:pid", async (req, res) => {
     const cartID = req.params.cid;
     const productID = req.params.pid;
-    const {productQuantity} = req.body;
+    const { productQuantity } = req.body;
 
     try {
         const updatedCart = await manager.updateCartUnitaryProduct(cartID, productID, productQuantity);
@@ -70,7 +70,7 @@ cartsRouter.put("/:cid/product/:pid", async (req, res) => {
             status: "Success",
             data: updatedCart,
         });
-    } catch(err) {
+    } catch (err) {
         res.status(401).send({
             status: `Error: ${err.message}!`,
             data: [],
@@ -93,7 +93,7 @@ cartsRouter.put("/:cid", async (req, res) => {
             status: "Success",
             data: updatedCart,
         });
-    } catch(err) {
+    } catch (err) {
         res.status(401).send({
             status: `Error: ${err.message}!`,
             data: [],

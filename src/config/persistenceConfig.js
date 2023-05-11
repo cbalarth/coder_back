@@ -19,4 +19,4 @@ if (persistenceConfig.persistenceType === "db") {
     throw new Error("Unknown persistenceType.");
 }
 
-export {productManager, cartManager, persistenceConfig};
+export { productManager, cartManager, persistenceConfig };

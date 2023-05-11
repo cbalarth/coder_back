@@ -1,40 +1,43 @@
 // GENERAL IMPORTS
-import express, {urlencoded} from "express";
-import {__filename, __dirname} from "./utils.js";
-import {engine} from "express-handlebars";
-import {Server} from "socket.io";
+import express, { urlencoded } from "express";
+import { __filename, __dirname } from "./utils.js";
+import { engine } from "express-handlebars";
+import { Server } from "socket.io";
 import mongoose from "mongoose";
-import viewsRouter from "./routes/views.router.js";
+import viewsRouter from "./4_router/views.router.js";
 import productManager from "./dao/file-managers/productManager.js";
 import chatManager from "./dao/db-managers/chatManager.js";
-import {database} from "./config/databaseConfig.js";
+import { options } from "./config/options.js";
+import cookieParser from "cookie-parser";
 
 // SESSIONS & PASSPORT IMPORTS
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-import {initializedPassport} from "./config/passportConfig.js";
-import authRouter from "./routes/db-routers/auth.router.js";
+import { initializePassport } from "./config/passportConfig.js";
+import authRouter from "./4_router/db-routers/auth.router.js";
 
 // CONDITIONAL IMPORTS
-import {persistenceConfig} from "./config/persistenceConfig.js" //Returns persistenceType ("db" or "file").
-import DbProductsRouter from "./routes/db-routers/products.router.js";
-import DbCartsRouter from "./routes/db-routers/carts.router.js";
-import FileProductsRouter from "./routes/file-routers/products.router.js";
-import FileCartsRouter from "./routes/file-routers/carts.router.js";
+import { persistenceConfig } from "./config/persistenceConfig.js" //Returns persistenceType ("db" or "file").
+import DbProductsRouter from "./4_router/db-routers/products.router.js";
+import DbCartsRouter from "./4_router/db-routers/carts.router.js";
+import FileProductsRouter from "./4_router/file-routers/products.router.js";
+import FileCartsRouter from "./4_router/file-routers/carts.router.js";
 const productsRouter = persistenceConfig.persistenceType === "db" ? DbProductsRouter : FileProductsRouter;
 const cartsRouter = persistenceConfig.persistenceType === "db" ? DbCartsRouter : FileCartsRouter;
 
-// EXPRESS
+// EXPRESS - MIDDLEWARES
 const app = express();
 app.use(express.json());
-app.use(urlencoded({extended: true}));
+app.use(urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
+app.use(cookieParser());
 
 // HTTP SERVER
-const httpServer = app.listen(8080, () => {
-    console.log("Server Listening - Port 8080");
+const port = options.server.port;
+const httpServer = app.listen(port, () => {
+    console.log(`Server Listening - Port ${port}`);
 });
 
 // SOCKET SERVER
@@ -72,6 +75,13 @@ setInterval(() => {
 }, 1000);
 
 // MONGOOSE
+const database = options.database.url;
+try {
+    mongoose.connect(database);
+    console.log("Connected to DB.");
+} catch (error) {
+    console.log(`Connection Error: ${error}`);
+}
 mongoose.connect(
     database
 ).then((conn) => {
@@ -89,7 +99,7 @@ app.use(session({
 }));
 
 // PASSPORT
-initializedPassport();
+initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
