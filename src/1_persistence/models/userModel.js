@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
+import { cartsCollection, usersCollection } from "../../constants/index.js";
 
-const collectionName = "users";
 const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "carts"
+        ref: cartsCollection
     },
     role: {
         type: String,
@@ -31,5 +31,5 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const userModel = mongoose.model(collectionName, userSchema);
+const userModel = mongoose.model(usersCollection, userSchema);
 export default userModel;

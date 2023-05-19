@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
+import { chatCollection } from "../../constants/index.js";
 
-const collectionName = "messages";
 const chatSchema = new mongoose.Schema({
     user: {
         type: String,
-        required: true,
+        required: true
     },
     message: {
         type: String,
-        required: true,
-    },
+        required: true
+    }
 });
 
-const chatModel = mongoose.model(collectionName, chatSchema);
+const chatModel = mongoose.model(chatCollection, chatSchema);
 export default chatModel;

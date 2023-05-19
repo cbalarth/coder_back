@@ -1,6 +1,6 @@
 import cartModel from "../models/cartModel.js";
 
-export default class cartManager {
+export class cartManager {
     constructor() {
         console.log("Working with CARTS using database in MongoDB.");
     }
@@ -11,15 +11,15 @@ export default class cartManager {
         return result;
     };
 
-    //ADD CART
-    addCart = async (newCart) => {
-        const result = await cartModel.create(newCart);
-        return result;
-    };
-
     //GET CART BY CID
     getCartById = async (cartID) => {
         const result = await cartModel.findOne({ _id: cartID }).lean(); //Inicia lectura específica.
+        return result;
+    };
+
+    //ADD CART
+    addCart = async (newCart) => {
+        const result = await cartModel.create(newCart);
         return result;
     };
 
@@ -54,7 +54,7 @@ export default class cartManager {
         }
     };
 
-    //DELETE PRODUCTS FROM CART BY CID
+    //DELETE ALL PRODUCTS FROM CART BY CID
     emptyCartById = async (cartID) => {
         const result = await cartModel.findOneAndUpdate(
             { _id: cartID },

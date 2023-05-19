@@ -1,30 +1,22 @@
 // GENERAL IMPORTS
 import express, { urlencoded } from "express";
-import { __filename, __dirname } from "./utils.js";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
-import viewsRouter from "./4_router/views.router.js";
-import productManager from "./dao/file-managers/productManager.js";
-import chatManager from "./dao/db-managers/chatManager.js";
+import { __filename, __dirname } from "./utils.js";
 import { options } from "./config/options.js";
-import cookieParser from "cookie-parser";
+import productManager from "./1_persistence/file-managers/productManager.js";
+import { chatManager } from "./1_persistence/db-managers/chatManager.js";
+import productsRouter from "./4_router/products.router.js";
+import cartsRouter from "./4_router/carts.router.js";
+import viewsRouter from "./4_router/views.router.js";
 
 // SESSIONS & PASSPORT IMPORTS
+import authRouter from "./4_router/auth.router.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import { initializePassport } from "./config/passportConfig.js";
-import authRouter from "./4_router/db-routers/auth.router.js";
-
-// CONDITIONAL IMPORTS
-import { persistenceConfig } from "./config/persistenceConfig.js" //Returns persistenceType ("db" or "file").
-import DbProductsRouter from "./4_router/db-routers/products.router.js";
-import DbCartsRouter from "./4_router/db-routers/carts.router.js";
-import FileProductsRouter from "./4_router/file-routers/products.router.js";
-import FileCartsRouter from "./4_router/file-routers/carts.router.js";
-const productsRouter = persistenceConfig.persistenceType === "db" ? DbProductsRouter : FileProductsRouter;
-const cartsRouter = persistenceConfig.persistenceType === "db" ? DbCartsRouter : FileCartsRouter;
 
 // EXPRESS - MIDDLEWARES
 const app = express();
@@ -32,7 +24,6 @@ app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
-app.use(cookieParser());
 
 // HTTP SERVER
 const port = options.server.port;

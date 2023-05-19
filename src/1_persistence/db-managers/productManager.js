@@ -1,6 +1,6 @@
 import productModel from "../models/productModel.js";
 
-export default class productManager {
+export class productManager {
     constructor() {
         console.log("Working with PRODUCTS using database in MongoDB.");
     }
@@ -37,15 +37,15 @@ export default class productManager {
         return result;
     };
 
-    //ADD PRODUCT
-    addProduct = async (newProduct) => {
-        const result = await productModel.create(newProduct);
-        return result;
-    };
-
     //GET PRODUCT BY PID
     getProductById = async (productID) => {
         const result = await productModel.findOne({ _id: productID }).lean(); //Inicia lectura específica.
+        return result;
+    };
+
+    //ADD PRODUCT
+    addProduct = async (newProduct) => {
+        const result = await productModel.create(newProduct);
         return result;
     };
 

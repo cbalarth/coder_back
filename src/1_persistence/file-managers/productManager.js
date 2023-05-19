@@ -2,7 +2,7 @@ import fs from "fs";
 import {__dirname} from "../../utils.js";
 
 class productManager {
-    #path = __dirname + "/dao/file-managers/files/products.json";
+    #path = __dirname + "/1_persistence/file-managers/files/products.json";
 
     async getProducts() {
         try {

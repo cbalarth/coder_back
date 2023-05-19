@@ -1,34 +1,25 @@
 import mongoose from "mongoose";
-
-//ESQUEMA INICIAL
-// const collectionName = "carts";
-// const cartSchema = new mongoose.Schema({
-//     products: {
-//         type: Array,
-//         required: true,
-//     },
-// });
+import { productsCollection, cartsCollection } from "../../constants/index.js";
 
 //ESQUEMA ACTUAL
-const collectionName = "carts";
 const cartSchema = new mongoose.Schema({
     products: {
         type: [
             {
                 productCode: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: "products",
-                    required: true,
+                    ref: productsCollection,
+                    required: true
                 },
                 productQuantity: {
                     type: Number,
-                    required: true,
+                    required: true
                 }
             }
         ],
         required: true,
         default: []
-    },
+    }
 });
 
 //MIDDLEWARE
@@ -36,5 +27,5 @@ cartSchema.pre("findOne", function () {
     this.populate("products.productCode");
 });
 
-const cartModel = mongoose.model(collectionName, cartSchema);
+const cartModel = mongoose.model(cartsCollection, cartSchema);
 export default cartModel;

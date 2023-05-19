@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { productManager } from "../config/persistenceConfig.js";
-import { cartManager } from "../config/persistenceConfig.js";
+import { productManager } from "../1_persistence/db-managers/productManager.js";
+import { cartManager } from "../1_persistence/db-managers/cartManager.js";
 import passport from "passport";
+import { cartController } from "../3_controller/cartController.js";
+import { cartService } from "../2_service/cartService.js";
 
 const viewsRouter = Router();
 const pManager = new productManager();
@@ -19,7 +21,7 @@ viewsRouter.get("/products", (req, res, next) => {
             return next(err);
         }
         if (!user) {
-            return res.status(401).send({ message: "Usuario no logueado 1." });
+            return res.status(401).send({ message: "Usuario no logueado (internal code: 1)" });
         }
         const { limit, page, sort, category, status } = req.query;
         const products = await pManager.getProducts(limit, page, sort, category, status);
@@ -43,18 +45,14 @@ viewsRouter.get("/products/:pid", async (req, res) => {
 
 // RENDER CARRITOS (POR MEJORAR, AÚN NO HACE RENDER)
 viewsRouter.get("/carts", async (req, res) => {
-    const carts = await cManager.getCarts(); //Lectura general de carritos.
-    res.send({ //MEJORAR -> En un futuro cambiar por un "render".
-        note: "render en construcción",
-        status: "Success",
-        payload: carts,
-    });
+    const carts = await cartService.getCarts(req, res);
+    res.send(carts);
 });
 
 // RENDER CARRITO x CID
 viewsRouter.get("/carts/:cid", async (req, res) => {
     const { cid } = req.params;
-    let cartProducts = (await cManager.getCartById(cid)).products; //Lectura general de productos de carrito específico.
+    let cartProducts = (await cartService.getCartById(cid)).products; //Lectura general de productos de carrito específico.
     res.render("cart", { cid, cartProducts, style: "products" }); //Para renderizar contenido.
 });
 
@@ -84,7 +82,7 @@ viewsRouter.get("/api/sessions/current", (req, res, next) => {
             return next(err);
         }
         if (!user) {
-            return res.status(401).send({ message: "Usuario no logueado 2." });
+            return res.status(401).send({ message: "Usuario no logueado (internal code: 2)." });
         }
         return res.send({ userInfo: user });
     })(req, res, next);

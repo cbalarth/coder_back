@@ -3,6 +3,7 @@ const socket = io();
 
 const productsList = document.getElementById("productsList");
 socket.on("productsUpdated", (data) => {
+    console.log("¡Received products!");
     productsList.innerHTML = "";
 
     for (const p of data) {
