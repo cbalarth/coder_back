@@ -10,6 +10,7 @@ import { chatManager } from "./1_persistence/db-managers/chatManager.js";
 import productsRouter from "./4_router/products.router.js";
 import cartsRouter from "./4_router/carts.router.js";
 import viewsRouter from "./4_router/views.router.js";
+import cookieParser from "cookie-parser";
 
 // SESSIONS & PASSPORT IMPORTS
 import authRouter from "./4_router/auth.router.js";
@@ -22,13 +23,13 @@ import { initializePassport } from "./config/passportConfig.js";
 const app = express();
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
+app.use(cookieParser());
 
 // HTTP SERVER
 const port = options.server.port;
 const httpServer = app.listen(port, () => {
-    console.log(`Server Listening - Port ${port}`);
+    console.log(`APP.JS | Server Listening - Port ${port}`);
 });
 
 // SOCKET SERVER
@@ -36,7 +37,7 @@ const chat = new chatManager();
 const socketServer = new Server(httpServer);
 
 socketServer.on("connection", async (socket) => {
-    console.log("New Client Connected");
+    console.log("APP.JS | New Client Connected");
 
     let messages = await chat.getMessages();
 
@@ -63,21 +64,16 @@ const pManager = new productManager();
 const products = await pManager.getProducts();
 setInterval(() => {
     socketServer.emit("productsUpdated", products);
-}, 1000);
+}, 1000); //Actualización cada 1 segundo.
 
 // MONGOOSE
 const database = options.database.url;
 try {
-    mongoose.connect(database);
-    console.log("Connected to DB.");
+    await mongoose.connect(database);
+    console.log("APP.JS | Connected DB");
 } catch (error) {
-    console.log(`Connection Error: ${error}`);
+    console.log(`APP.JS | Connection Error: ${error}`);
 }
-mongoose.connect(
-    database
-).then((conn) => {
-    console.log("Connected to DB.");
-});
 
 // SESSIONS
 app.use(session({

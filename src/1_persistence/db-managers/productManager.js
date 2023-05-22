@@ -2,7 +2,7 @@ import productModel from "../models/productModel.js";
 
 export class productManager {
     constructor() {
-        console.log("Working with PRODUCTS using database in MongoDB.");
+        console.log("PRODUCTMANAGER.JS | PRODUCTS Connected DB");
     }
 
     //GET PRODUCTS

@@ -1,5 +1,4 @@
 import { Router } from "express";
-import passport from "passport";
 import { createHash, isValidPassword } from "../utils.js";
 import userModel from "../1_persistence/models/userModel.js";
 import { userManager } from "../1_persistence/db-managers/userManager.js";

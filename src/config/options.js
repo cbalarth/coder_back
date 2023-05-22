@@ -17,7 +17,7 @@ const options = {
     server: {
         port: PORT,
         secretToken: SECRET_TOKEN,
-        cookieToken: COOKIE_TOKEN,
+        cookieToken: COOKIE_TOKEN
     }
 };
 

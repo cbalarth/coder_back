@@ -2,7 +2,7 @@ import chatModel from "../models/chatModel.js";
 
 export class chatManager {
     constructor() {
-        console.log("Working with MESSAGES using database in MongoDB.");
+        console.log("CHATMANAGER.JS | MESSAGES Connected DB");
     }
 
     getMessages = async () => {

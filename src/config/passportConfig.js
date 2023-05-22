@@ -1,8 +1,8 @@
 import passport from "passport";
-import LocalStrategy from "passport-local";
-import GithubStrategy from "passport-github2";
-import userModel from "../1_persistence/models/userModel.js";
-import { createHash, isValidPassword } from "../utils.js";
+// import LocalStrategy from "passport-local";
+// import GithubStrategy from "passport-github2";
+// import userModel from "../1_persistence/models/userModel.js";
+// import { createHash, isValidPassword } from "../utils.js";
 import jwt from "passport-jwt";
 import { options } from "./options.js";
 

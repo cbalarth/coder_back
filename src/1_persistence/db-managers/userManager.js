@@ -1,7 +1,7 @@
 export class userManager {
     constructor(model) {
         this.model = model;
-        console.log("Working with USERS using database in MongoDB.");
+        console.log("USERMANAGER.JS | USERS Connected DB");
     };
 
     //ADD USER

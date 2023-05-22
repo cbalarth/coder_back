@@ -4,8 +4,8 @@ import { options } from "./options.js";
 export const connectDB = async () => {
     try {
         await mongoose.connect(options.database.url);
-        console.log("Connected to database in MongoDB.");
+        console.log("DBCONNECTION.JS | Connected DB");
     } catch (error) {
-        console.log(`Connection error to database in MongoDB: ${error.message}`);
+        console.log(`DBCONNECTION.JS | Connection Error: ${error.message}`);
     }
 }

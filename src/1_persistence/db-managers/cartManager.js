@@ -2,7 +2,7 @@ import cartModel from "../models/cartModel.js";
 
 export class cartManager {
     constructor() {
-        console.log("Working with CARTS using database in MongoDB.");
+        console.log("CARTMANAGER.JS | CARTS Connected DB");
     }
 
     //GET CARTS
