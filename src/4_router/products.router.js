@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { productController } from "../3_controller/productController.js";
+import { checkRole } from "../middlewares/checkRole.js";
 
 const productsRouter = Router();
 
@@ -10,12 +11,12 @@ productsRouter.get("/", productController.getProducts);
 productsRouter.get("/:pid", productController.getProductById);
 
 //AGREGAR PRODUCTO
-productsRouter.post("/", productController.addProduct);
+productsRouter.post("/", checkRole(["admin"]), productController.addProduct);
 
 //MODIFICAR x PID
-productsRouter.put("/:pid", productController.updateProduct);
+productsRouter.put("/:pid", checkRole(["admin"]), productController.updateProduct);
 
 //ELIMINAR x PID
-productsRouter.delete("/:pid", productController.deleteProduct);
+productsRouter.delete("/:pid", checkRole(["admin"]), productController.deleteProduct);
 
 export default productsRouter;

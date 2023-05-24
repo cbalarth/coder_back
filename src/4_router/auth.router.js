@@ -47,7 +47,7 @@ authRouter.post("/login", async (req, res) => {
             //validar la contraseña
             if (isValidPassword(password, user)) {
                 //generar el token
-                const token = jwt.sign({ _id: user._id, first_name: user.first_name, email: user.email, role: user.role }, options.server.secretToken, { expiresIn: "24h" });
+                const token = jwt.sign({ _id: user._id, first_name: user.first_name, last_name: user.last_name, email: user.email, role: user.role }, options.server.secretToken, { expiresIn: "24h" });
                 res.cookie(options.server.cookieToken, token, {
                     httpOnly: true
                 }).redirect("/products")
@@ -82,7 +82,7 @@ authRouter.post("/forgot", async (req, res) => {
 // LOGOUT (API o RENDER)
 authRouter.get("/logout", (req, res) => {
     req.logout(() => {
-        res.clearCookie(options.server.cookieToken).json({ status: "success", message: "LOGOUT: Session finalizada exitosamente." });
+        res.clearCookie(options.server.cookieToken).json({ status: "Success", message: "LOGOUT: Session finalizada exitosamente." });
     });
 });
 

@@ -3,6 +3,8 @@ import { productManager } from "../1_persistence/db-managers/productManager.js";
 import { cartManager } from "../1_persistence/db-managers/cartManager.js";
 import passport from "passport";
 import { cartService } from "../2_service/cartService.js";
+import { GetUserDto } from "../1_persistence/dto/user.dto.js";
+import { checkRole } from "../middlewares/checkRole.js";
 
 const viewsRouter = Router();
 const pManager = new productManager();
@@ -24,9 +26,8 @@ viewsRouter.get("/products", (req, res, next) => {
         }
         const { limit, page, sort, category, status } = req.query;
         const products = await pManager.getProducts(limit, page, sort, category, status);
-        const userEmail = user.email;
         const isAdmin = (user.role == "admin");
-        return res.render("products", { products, limit: (limit ? limit : 10), sort, category, status, userEmail, isAdmin, style: "products" });
+        return res.render("products", { products, limit: (limit ? limit : 10), sort, category, status, user, isAdmin, style: "products" });
     })(req, res, next);
 });
 
@@ -61,21 +62,21 @@ viewsRouter.get("/realtimeproducts", (req, res) => {
 });
 
 // RENDER CHAT
-viewsRouter.get("/chat", (req, res) => {
+viewsRouter.get("/chat", checkRole(["user"]), (req, res) => {
     res.render("chat", { style: "chat" }); //Para renderizar contenido.
 });
 
 // RENDER LOCAL SIGNUP
-viewsRouter.get("/api/sessions/signup", (req, res) => {
+viewsRouter.get("/signup", (req, res) => {
     res.render("localSignup", { style: "home" });
 });
 
 // RENDER LOCAL LOGIN
-viewsRouter.get("/api/sessions/login", (req, res) => {
+viewsRouter.get("/login", (req, res) => {
     res.render("localLogin", { style: "home" });
 });
 
-viewsRouter.get("/api/sessions/current", (req, res, next) => {
+viewsRouter.get("/current", (req, res, next) => {
     passport.authenticate("authJWT", { session: false }, (err, user) => {
         if (err) {
             return next(err);
@@ -83,7 +84,8 @@ viewsRouter.get("/api/sessions/current", (req, res, next) => {
         if (!user) {
             return res.status(401).send({ message: "Usuario no logueado (internal code: 2)." });
         }
-        return res.send({ userInfo: user });
+        const result = new GetUserDto(user);
+        return res.send({ userInfo: result });
     })(req, res, next);
 });
 
