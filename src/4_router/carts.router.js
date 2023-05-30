@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { cartController } from "../3_controller/cartController.js";
+import { checkRole } from "../middlewares/checkRole.js";
 
 import { productManager } from "../1_persistence/db-managers/productManager.js";
 import { cartManager } from "../1_persistence/db-managers/cartManager.js";
