@@ -11,6 +11,7 @@ import productsRouter from "./4_router/products.router.js";
 import cartsRouter from "./4_router/carts.router.js";
 import viewsRouter from "./4_router/views.router.js";
 import cookieParser from "cookie-parser";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 // SESSIONS & PASSPORT IMPORTS
 import authRouter from "./4_router/auth.router.js";
@@ -100,3 +101,4 @@ app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', authRouter);
+app.use(errorHandler);

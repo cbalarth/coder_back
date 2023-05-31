@@ -4,6 +4,9 @@ import userModel from "../1_persistence/models/userModel.js";
 import { userManager } from "../1_persistence/db-managers/userManager.js";
 import { options } from "../config/options.js";
 import jwt from "jsonwebtoken";
+import { EnumError } from "../constants/index.js";
+import { CustomError } from "../services/customError.service.js";
+import { generateUserErrorInfo } from "../services/userErrorInfo.js";
 
 const authRouter = Router();
 const uManager = new userManager(userModel);
@@ -13,6 +16,21 @@ authRouter.post("/signup", async (req, res) => {
     try {
         const { first_name, last_name, email, password } = req.body;
         const user = await uManager.getUserByEmail(email);
+
+        //Validación password con al menos 1 número.
+        const regex = /\d/;
+        const doesItHaveNumber = regex.test(password);
+        if (!doesItHaveNumber){
+            console.log(generateUserErrorInfo(req.body));
+            CustomError.createError({
+                name: "Password without number.",
+                cause: generateUserErrorInfo(req.body),
+                message: "Error creando el nuevo usuario.",
+                errorCode: EnumError.AUTH_ERROR
+            });
+        }
+        
+        //Validación usuario no existente.
         if (!user) {
             let role = "user";
             if (email.endsWith("@coder.com")) {
