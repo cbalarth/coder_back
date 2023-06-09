@@ -12,6 +12,7 @@ import cartsRouter from "./4_router/carts.router.js";
 import viewsRouter from "./4_router/views.router.js";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { addLogger } from "./middlewares/logger.js";
 
 // SESSIONS & PASSPORT IMPORTS
 import authRouter from "./4_router/auth.router.js";
@@ -102,3 +103,15 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', authRouter);
 app.use(errorHandler);
+
+// LOGGER TEST
+app.use(addLogger);
+app.get("/loggertest", (req, res) => {
+    req.logger.debug("Nivel debug");
+    req.logger.http("Nivel http");
+    req.logger.info("Nivel info");
+    req.logger.warning("Nivel warning");
+    req.logger.error("Nivel error");
+    req.logger.fatal("Nivel fatal");
+    res.send("TEST NIVELES")
+});
