@@ -1,0 +1,392 @@
+paths:
+  /api/carts/:
+    # Obtener listado general de carritos.
+    get:
+      summary: Obtener listado general de carritos.
+      tags:
+        - Carritos
+      responses:
+        "200":
+          description: El listado general de carritos fue obtenido exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Products"
+        "401":
+          description: Error por falta de permisos.
+        "500":
+          description: Error interno del servidor.
+    # Agregar un nuevo carrito.
+    post:
+      summary: Agregar un nuevo carrito.
+      tags:
+        - Carritos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/newProduct"
+      responses:
+        "200":
+          description: El carrito fue agregado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Product"
+        "401":
+          description: Error por falta de permisos.
+        "500":
+          description: Error interno del servidor.
+  /api/carts/{cid}:
+    # Obtener detalle de carrito específico.
+    get:
+      summary: Obtener detalle de carrito específico.
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El parámetro CID es el identificador del carrito.
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: El detalle de carrito específico fue obtenido exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Product"
+        "401":
+          description: Error por falta de permisos.
+        "500":
+          description: Error interno del servidor. 
+    # Modificar detalle de carrito específico.
+    put:
+      summary: Modificar detalle de carrito específico.
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El parámetro CID es el identificador del carrito.
+          schema:
+            $type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProduct"
+      responses:
+        "200":
+          description: El detalle del carrito específico fue modificado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Product"
+        "401":
+          description: Error por falta de permisos.
+        "500":
+          description: Error interno del servidor.
+    # Eliminar carrito específico.
+    delete:
+      summary: Eliminar carrito específico.
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El parámetro CID es el identificador del carrito.
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: El carrito específico fue eliminado exitosamente.
+        "401":
+          description: Error por falta de permisos.
+        "500":
+          description: Error interno del servidor.
+
+components:
+# RESPUESTAS
+  schemas:
+    # Respuesta Productos
+    Products:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de respuesta ante la solicitud.
+          example: Success
+        payload:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: Identificador del carrito, autogenerado por la base de datos.
+              title:
+                type: string
+                description: Título del carrito.
+              description:
+                type: string
+                description: Descripción del carrito.
+              code:
+                type: string
+                description: Código del carrito, generado manualmente.
+              price:
+                type: number
+                description: Precio del carrito.
+              status:
+                type: string
+                description: Estado del carrito.
+              stock:
+                type: boolean
+                description: Stock del carrito.
+              category:
+                type: string
+                description: Categoría del carrito.
+              thumbnails:
+                type: array
+                description: Miniaturas del carrito.
+              __v:
+                type: number
+                description: Versión del documento.
+            example:
+              - _id: 642f4e61ad40756bbf17ed9d
+                title: title 01
+                description: description 01
+                code: abc01
+                price: 1001
+                status: true
+                stock: 11
+                category: cat01
+                thumbnails: []
+                __v: 0
+              - _id: 642f4e82ad40756bbf17ed9f
+                title: title 02
+                description: description 02
+                code: abc02
+                price: 1002
+                status: true
+                stock: 12
+                category: cat02
+                thumbnails: []
+                __v: 0
+    # Respuesta Producto
+    Product:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de respuesta ante la solicitud.
+          example: Success
+        payload:
+          type: object
+          properties:
+            _id:
+              type: string
+              description: Identificador del carrito, autogenerado por la base de datos.
+            title:
+              type: string
+              description: Título del carrito.
+            description:
+              type: string
+              description: Descripción del carrito.
+            code:
+              type: string
+              description: Código del carrito, generado manualmente.
+            price:
+              type: number
+              description: Precio del carrito.
+            status:
+              type: string
+              description: Estado del carrito.
+            stock:
+              type: boolean
+              description: Stock del carrito.
+            category:
+              type: string
+              description: Categoría del carrito.
+            thumbnails:
+              type: array
+              description: Miniaturas del carrito.
+            __v:
+              type: number
+              description: Versión del documento.
+          example:
+              _id: 642f4e61ad40756bbf17ed9d
+              title: title 01
+              description: description 01
+              code: abc01
+              price: 1001
+              status: true
+              stock: 11
+              category: cat01
+              thumbnails: []
+              __v: 0
+    # Respuesta Carritos
+    Carts:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de respuesta ante la solicitud.
+          example: Success
+        payload:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: Identificador del carrito, autogenerado por la base de datos.
+              title:
+                type: string
+                description: Título del carrito.
+              description:
+                type: string
+                description: Descripción del carrito.
+              code:
+                type: string
+                description: Código del carrito, generado manualmente.
+              price:
+                type: number
+                description: Precio del carrito.
+              status:
+                type: string
+                description: Estado del carrito.
+              stock:
+                type: boolean
+                description: Stock del carrito.
+              category:
+                type: string
+                description: Categoría del carrito.
+              thumbnails:
+                type: array
+                description: Miniaturas del carrito.
+              __v:
+                type: number
+                description: Versión del documento.
+            example:
+              - _id: 642f4e61ad40756bbf17ed9d
+                title: title 01
+                description: description 01
+                code: abc01
+                price: 1001
+                status: true
+                stock: 11
+                category: cat01
+                thumbnails: []
+                __v: 0
+              - _id: 642f4e82ad40756bbf17ed9f
+                title: title 02
+                description: description 02
+                code: abc02
+                price: 1002
+                status: true
+                stock: 12
+                category: cat02
+                thumbnails: []
+                __v: 0
+    # Respuesta Carrito
+    Cart:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de respuesta ante la solicitud.
+          example: Success
+        payload:
+          type: object
+          properties:
+            _id:
+              type: string
+              description: Identificador del carrito, autogenerado por la base de datos.
+            title:
+              type: string
+              description: Título del carrito.
+            description:
+              type: string
+              description: Descripción del carrito.
+            code:
+              type: string
+              description: Código del carrito, generado manualmente.
+            price:
+              type: number
+              description: Precio del carrito.
+            status:
+              type: string
+              description: Estado del carrito.
+            stock:
+              type: boolean
+              description: Stock del carrito.
+            category:
+              type: string
+              description: Categoría del carrito.
+            thumbnails:
+              type: array
+              description: Miniaturas del carrito.
+            __v:
+              type: number
+              description: Versión del documento.
+          example:
+              _id: 642f4e61ad40756bbf17ed9d
+              title: title 01
+              description: description 01
+              code: abc01
+              price: 1001
+              status: true
+              stock: 11
+              category: cat01
+              thumbnails: []
+              __v: 0
+# CONSULTAS
+  requestBodies:
+    # Body Nuevo Producto
+    newProduct:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario.
+        last_name:
+          type: string
+          description: Apellido del usuario.
+        email:
+          type: string
+          description: Correo del usuario, campo único.
+        password:
+          type: string
+          description: Contraseña del usuario.
+      example:
+        first_name: pepe
+        last_name: suarez
+        email: pepe@gmail.com
+        password: 1234
+    # Body Modificar Producto
+    updateProduct:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario.
+        last_name:
+          type: string
+          description: Apellido del usuario.
+        email:
+          type: string
+          description: Correo del usuario, campo único.
+        password:
+          type: string
+          description: Contraseña del usuario.
+      example:
+        first_name: pepe
+        last_name: suarez
+        email: pepe@gmail.com
+        password: 1234

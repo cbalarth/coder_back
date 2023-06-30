@@ -30,6 +30,4 @@ productsRouter.put("/:pid", checkRole(["admin"]), productController.updateProduc
 //ELIMINAR x PID
 productsRouter.delete("/:pid", checkRole(["admin"]), productController.deleteProduct);
 
-
-
 export default productsRouter;

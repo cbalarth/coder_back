@@ -3,6 +3,8 @@ import express, { urlencoded } from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpecs } from "./config/documentationConfig.js";
 import { __filename, __dirname } from "./utils.js";
 import { options } from "./config/options.js";
 import productManager from "./1_persistence/file-managers/productManager.js";
@@ -13,6 +15,7 @@ import viewsRouter from "./4_router/views.router.js";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { addLogger } from "./middlewares/logger.js";
+
 
 // SESSIONS & PASSPORT IMPORTS
 import authRouter from "./4_router/auth.router.js";
@@ -115,3 +118,6 @@ app.get("/loggertest", (req, res) => {
     req.logger.fatal("Nivel fatal");
     res.send("TEST NIVELES")
 });
+
+// DOCUMENTACIÓN
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
