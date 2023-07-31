@@ -21,11 +21,22 @@ ul {
 }
 
 .product {
+    border: 2px dashed blue;
+    margin: 10px;
+}
+
+#cartsList {
+    border: 2px dashed orange;
+    padding: 0px;
+    margin: 0px;
+}
+
+.cart {
     border: 2px dashed white;
     margin: 10px;
 }
 
-#userContainer {
+#loginContainer {
     background-color: blueviolet;
     color: white;
     padding: 10px;
@@ -35,4 +46,15 @@ ul {
     background-color: blueviolet;
     color: white;
     padding: 10px;
+}
+
+#usersList {
+    border: 2px dashed green;
+    padding: 0px;
+    margin: 0px;
+}
+
+.user {
+    border: 2px dashed yellow;
+    margin: 10px;
 }

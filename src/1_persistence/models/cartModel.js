@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 import { productsCollection, cartsCollection } from "../../constants/index.js";
 
-//ESQUEMA ACTUAL
+//ESQUEMA CARRITO
 const cartSchema = new mongoose.Schema({
     products: {
         type: [
             {
                 productCode: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: productsCollection,
+                    ref: productsCollection, //Referencia a la colección de productos.
                     required: true
                 },
                 productQuantity: {

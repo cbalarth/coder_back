@@ -1,4 +1,5 @@
 import { productService } from "../2_service/productService.js";
+import { sendProductDeletionEmail } from "../middlewares/mailing.js";
 
 export class productController {
     //GET PRODUCTS
@@ -36,7 +37,11 @@ export class productController {
     //ADD PRODUCT
     static addProduct = async (req, res) => {
         try {
-            const newProduct = await productService.addProduct(req.body);
+            const product = req.body;
+            if (req.user.role == "premium") { //Valida si es usuario premium.
+                product.owner = req.user.email; //Asigna ownership mediante correo.
+            }
+            const newProduct = await productService.addProduct(product);
             res.status(201).send({ status: "Success", payload: newProduct });
         } catch (err) {
             res.status(401).send({ status: "Failure", error: err.message });
@@ -56,8 +61,17 @@ export class productController {
     //DELETE PRODUCT BY PID
     static deleteProduct = async (req, res) => {
         try {
-            const deletion = await productService.deleteProduct(req.params.pid);
-            res.status(201).send({ status: "Success", payload: deletion });
+            const product = await productService.getProductById(req.params.pid);
+            const productOwner = product.owner;
+            if ((req.user.role == "premium" && req.user.email == productOwner) || req.user.role == "admin") { //Valida si es usuario premium owner del producto o admin.
+                if (productOwner != "admin") {
+                    await sendProductDeletionEmail(productOwner, product);
+                }
+                const deletion = await productService.deleteProduct(req.params.pid);
+                res.status(201).send({ status: "Success", payload: deletion });
+            } else {
+                res.status(401).send({ status: "Failure", error: "No tienes permiso para borrar este producto." });
+            }
         } catch (err) {
             res.status(401).send({ status: "Failure", error: err.message });
         }

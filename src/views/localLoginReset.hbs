@@ -1,0 +1,8 @@
+<h2>Restablecer tu contraseña.</h2>
+<p>Ingresa tu correo y la nueva contraseña.</p>
+
+<form method="post" action="/api/sessions/reset-password?token={{token}}">
+    <input type="email" name="email" placeholder="ejemplo@gmail.com" /><br><br>
+    <input type="password" name="newPassword" placeholder="nuevaContraseña" /><br><br>
+    <button type="submit">Restablecer Contraseña</button>
+</form>

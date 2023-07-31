@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { cartsCollection, usersCollection } from "../../constants/index.js";
 
+//ESQUEMA USUARIO
 const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
@@ -21,14 +22,42 @@ const userSchema = new mongoose.Schema({
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: cartsCollection
+        ref: cartsCollection //Referencia a la colección de carritos.
     },
     role: {
         type: String,
-        enum: ["user", "admin"],
+        enum: ["user", "premium", "admin"],
         required: true,
         default: "user"
+    },
+    documents: {
+        type: [
+            {
+                name: { type: String, required: true },
+                reference: { type: String, required: true }
+            }
+        ],
+        default: []
+    },
+    last_connection: {
+        type: Date,
+        default: null
+    },
+    status: {
+        type: String,
+        required: true,
+        enums: ["pendiente", "incompleto", "completo"],
+        default: "pendiente"
+    },
+    avatar: {
+        type: String,
+        default: ""
     }
+});
+
+//MIDDLEWARE
+userSchema.pre("findOne", function () {
+    this.populate("cart");
 });
 
 const userModel = mongoose.model(usersCollection, userSchema);

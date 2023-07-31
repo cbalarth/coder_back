@@ -1,31 +1,35 @@
-{{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
-
 <div>
-    <h2>NORMAL VIEWS</h2>
+    <h2>RENDER VIEWS</h2>
 
-    <h3><a href="/products">PRODUCTS - MongoDB</a> (Requiere Login)</h3>
-    <a href="/products/642f4e61ad40756bbf17ed9d">
-        <h3>PRODUCTO DE EJEMPLO - MongoDB</h3>
-    </a><br>
+    <h3><a href="/products">PRODUCTS</a></h3>
+    <p><b>Requiere Login: </b>Si</p>
+    <p><b>Roles: </b>User, Premium, Admin</p>
 
-    <h3><a href="/carts">CARTS - MongoDB</a> (Render en Construcción)</h3>
-    <a href="/carts/642f525085f8337b909b3898">
-        <h3>CART DE EJEMPLO - MongoDB</h3>
-    </a><br>
+    <h3><a href="/carts">CARTS</a></h3>
+    <p><b>Requiere Login: </b>Si</p>
+    <p><b>Roles: </b>User, Premium, Admin</p>
 
-    <a href="/chat">
-        <h3>REAL TIME CHAT - MongoDB</h3>
-    </a>
+    <h3><a href="/myCart">MY CART</a></h3>
+    <p><b>Requiere Login: </b>Si</p>
+    <p><b>Roles: </b>User, Premium, Admin</p>
 
-    <a href="/realtimeproducts">
-        <h3>REAL TIME PRODUCTS - File</h3>
-    </a>
+    <h3><a href="/chat">REAL TIME CHAT</a></h3>
+    <p><b>Requiere Login: </b>Si</p>
+    <p><b>Roles: </b>User</p>
+
+    <h3><a href="/realtimeproducts">REAL TIME PRODUCTS</a> (File & WebSocket)</h3>
+    <p><b>Requiere Login: </b>No</p>
+    <p><b>Roles: </b>User, Premium, Admin</p>
+
+    <h3><a href="/users">USERS</a></h3>
+    <p><b>Requiere Login: </b>Si</p>
+    <p><b>Roles: </b>Admin</p>
 
 </div><br>
 <hr>
 
 <div>
-    <h2>API</h2>
+    <h2>API VIEWS</h2>
     <a href="/api/products">
         <h3>PRODUCTS - MongoDB</h3>
     </a>

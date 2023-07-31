@@ -1,0 +1,42 @@
+{{!-- ESPACIO CREDENCIALES --}}
+
+<div id="loginContainer">
+    <p><b>¡Bienvenido {{user.first_name}} {{user.last_name}}!</b></p>
+    <p>Cart: {{user.cart._id}}</p>
+</div><br>
+
+{{#Equals user.role "admin"}}
+<div id="adminContainer">
+    <b>
+        <p>CONTENEDOR SECRETO DE ADMIN</p>
+    </b>
+    <p>Nota: Solo ves este contenedor si iniciaste sesión con credenciales de Admin.</p>
+</div><br>
+{{/Equals}}
+
+{{!-- CÓDIGO --}}
+
+<div id="titleContainer">
+    <h1>CARTS</h1>
+    <p>HELLO FROM CARTS.HBS</p>
+</div><br>
+
+<div id="cartsContainer">
+    <div id="cartsList">
+        {{#each carts}}
+        <div class="cart">
+            <h2><strong>CART "{{this._id}}"</strong></h2>
+            <ul>
+                {{#each this.products}}
+                <h3>Product</h3>
+                <li>Product ID: {{this.productCode}}</li>
+                <li>Quantity: {{this.productQuantity}}</li>
+                {{/each}}
+            </ul>
+            <div id="actions">
+                <a href="/carts/{{this._id}}"><button class="action1">Ver Carrito</button></a>
+            </div><br>
+        </div>
+        {{/each}}
+    </div>
+</div>

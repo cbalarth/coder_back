@@ -1,25 +1,51 @@
-<h1>CART {{cid}}</h1>
+{{!-- ESPACIO CREDENCIALES --}}
 
-<div id="productsContainer">
-    <div id="productsList">
-        {{#each cartProducts}}
-        <div class="product">
-            <h2><strong>{{productCode.title}}</strong></h2>
-            <ul>
-                <li>Product ID (db): {{productCode._id}}</li>
-                <li>Description: {{productCode.description}}</li>
-                <li>Code: {{productCode.code}}</li>
-                <li>Price: ${{productCode.price}}</li>
-                <li>Status: {{productCode.status}}</li>
-                <li>Stock: {{productCode.stock}}</li>
-                <li>Category: {{productCode.category}}</li>
-                <li>Thumbnails: {{productCode.thumbnails}}</li>
-                <li><strong>Total Quantity: {{productQuantity}}</strong></li>
-            </ul>
-            <div id="actions">
-                <a href="/products/{{productCode._id}}"><button class="action1">Ver Producto</button></a>
-            </div><br>
-        </div>
-        {{/each}}
+<div id="loginContainer">
+    <p><b>¡Bienvenido {{user.first_name}} {{user.last_name}}!</b></p>
+    <p>Cart: {{user.cart._id}}</p>
+</div><br>
+
+{{#Equals user.role "admin"}}
+<div id="adminContainer">
+    <b>
+        <p>CONTENEDOR SECRETO DE ADMIN</p>
+    </b>
+    <p>Nota: Solo ves este contenedor si iniciaste sesión con credenciales de Admin.</p>
+</div><br>
+{{/Equals}}
+
+{{!-- CÓDIGO --}}
+
+<div id="titleContainer">
+    <h1>CART "{{cid}}"</h1>
+    <p>HELLO FROM CART.HBS</p>
+</div><br>
+
+<div id="productsList">
+    {{#each cartProducts}}
+    <div class="product">
+        <h2><strong>{{productCode.title}}</strong></h2>
+        <ul>
+            <li>Product ID (db): {{productCode._id}}</li>
+            <li>Description: {{productCode.description}}</li>
+            <li>Code: {{productCode.code}}</li>
+            <li>Price: ${{productCode.price}}</li>
+            <li>Status: {{productCode.status}}</li>
+            <li>Stock: {{productCode.stock}}</li>
+            <li>Category: {{productCode.category}}</li>
+            <li>Thumbnails: {{productCode.thumbnails}}</li>
+            <li><strong>Total Quantity: {{productQuantity}}</strong></li>
+        </ul>
+        <div id="actions">
+            <a href="/products/{{productCode._id}}"><button class="action1">Ver Producto</button></a>
+        </div><br>
     </div>
+    {{/each}}
 </div>
+
+{{#if purchasable}}
+    <br>
+    <form id="buyCartForm" action="/api/carts/{{user.cart._id}}/purchase" method="POST">
+        <button class="action2">Comprar Carrito</button>
+    </form>
+{{/if}}

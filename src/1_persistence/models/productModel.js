@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 import { productsCollection } from "../../constants/index.js";
 
+//ESQUEMA PRODUCTO
 const productSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -38,10 +39,14 @@ const productSchema = new mongoose.Schema({
         type: Array,
         required: true,
         default: []
+    },
+    owner: {
+        type: String,
+        default: "admin"
     }
 });
 
-// productSchema.plugin(mongoosePaginate); //Integra la funcionalidad de Paginate para este Schema/Model.
+// productSchema.plugin(mongoosePaginate);
 productSchema.plugin(aggregatePaginate); //Integra la funcionalidad de Paginate para este Schema/Model.
 
 const productModel = mongoose.model(productsCollection, productSchema);

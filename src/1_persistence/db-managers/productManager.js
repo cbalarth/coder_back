@@ -10,6 +10,10 @@ export class productManager {
 
         let aggregateConfig = [];
 
+        if (!sort) {
+            aggregateConfig.push({ $sort: { title: 1 } });
+        }
+
         if (sort === "desc") {
             aggregateConfig.push({ $sort: { price: -1 } });
         } else if (sort === "asc") {

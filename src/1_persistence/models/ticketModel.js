@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { ticketsCollection } from "../../constants/index.js";
 
+//ESQUEMA TICKET
 const ticketSchema = new mongoose.Schema({
     code: {
         type: String,

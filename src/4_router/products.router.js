@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { productController } from "../3_controller/productController.js";
-import { checkRole } from "../middlewares/checkRole.js";
+import { checkRole } from "../middlewares/auth.js";
 import { generateMockingProduct } from "../utils.js";
+import passport from "passport";
 
 const productsRouter = Router();
 
@@ -22,12 +23,12 @@ productsRouter.get("/", productController.getProducts);
 productsRouter.get("/:pid", productController.getProductById);
 
 //AGREGAR PRODUCTO
-productsRouter.post("/", checkRole(["admin"]), productController.addProduct);
+productsRouter.post("/", passport.authenticate("authJWT", { session: false }), checkRole(["premium", "admin"]), productController.addProduct);
 
 //MODIFICAR x PID
-productsRouter.put("/:pid", checkRole(["admin"]), productController.updateProduct);
+productsRouter.put("/:pid", checkRole(["premium, admin"]), productController.updateProduct);
 
 //ELIMINAR x PID
-productsRouter.delete("/:pid", checkRole(["admin"]), productController.deleteProduct);
+productsRouter.delete("/:pid", passport.authenticate("authJWT", { session: false }), checkRole(["premium", "admin"]), productController.deleteProduct);
 
 export default productsRouter;

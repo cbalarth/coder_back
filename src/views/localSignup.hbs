@@ -1,11 +1,13 @@
 <h1>LOCAL SIGNUP</h1>
 
 <div>
-    <form method="post" action="/api/sessions/signup">
+    <form method="post" action="/api/sessions/signup" enctype="multipart/form-data">
         <input type="text" placeholder="Nombre" name="first_name" required /><br><br>
         <input type="text" placeholder="Apellido" name="last_name" required /><br><br>
         <input type="email" placeholder="Correo" name="email" required /><br><br>
         <input type="password" placeholder="Contraseña" name="password" required /><br><br>
+        <p>Imagen de Perfil</p>
+        <input type="file"  name="avatar" accept="image/*" required /><br><br><br>
         <button type="submit">Registrarse</button>
     </form>
 </div>

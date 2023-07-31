@@ -1,4 +1,5 @@
 // GENERAL IMPORTS
+import path from "path";
 import express, { urlencoded } from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
@@ -12,10 +13,10 @@ import { chatManager } from "./1_persistence/db-managers/chatManager.js";
 import productsRouter from "./4_router/products.router.js";
 import cartsRouter from "./4_router/carts.router.js";
 import viewsRouter from "./4_router/views.router.js";
+import usersRouter from "./4_router/users.router.js";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { addLogger } from "./middlewares/logger.js";
-
 
 // SESSIONS & PASSPORT IMPORTS
 import authRouter from "./4_router/auth.router.js";
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
 app.use(cookieParser());
+app.use(express.static("multer"));
 
 // HTTP SERVER
 const port = options.server.port;
@@ -96,15 +98,27 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // HANDLEBARS
-app.engine("hbs", engine());
+app.engine("hbs", engine({
+    helpers: {
+        Equals: function (a, b, options) {
+            return a === b ? options.fn(this) : options.inverse(this);
+        },
+        notEquals: function (a, b, options) {
+            return a !== b ? options.fn(this) : options.inverse(this);
+        }
+    }
+}));
 app.set("view engine", "hbs");
-app.set("views", __dirname + "/views");
+// app.set("views", __dirname + "/views");
+app.set('views', path.join(__dirname, "/views"));
+
 
 // ROUTERS
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', authRouter);
+app.use('/api/users', usersRouter);
 app.use(errorHandler);
 
 // LOGGER TEST

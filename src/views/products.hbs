@@ -1,26 +1,24 @@
-{{!-- https://handlebarsjs.com/guide/builtin-helpers.html --}}
+{{!-- ESPACIO CREDENCIALES --}}
 
-<div id="userContainer">
-    <b>
-        <p>¡Bienvenido {{user.first_name}}!</p>
-    </b>
-    <p>Nota: Solo ves esta página si iniciaste session localmente o a través de Github.</p>
+<div id="loginContainer">
+    <p><b>¡Bienvenido {{user.first_name}} {{user.last_name}}!</b></p>
+    <p>Cart: {{user.cart._id}}</p>
 </div><br>
 
-{{#if isAdmin}}
+{{#Equals user.role "admin"}}
 <div id="adminContainer">
     <b>
         <p>CONTENEDOR SECRETO DE ADMIN</p>
     </b>
-    <p>Nota: Solo ves este contenedor si iniciaste session con credenciales de Admin.</p>
+    <p>Nota: Solo ves este contenedor si iniciaste sesión con credenciales de Admin.</p>
 </div><br>
-{{/if}}
+{{/Equals}}
+
+{{!-- CÓDIGO --}}
 
 <div id="titleContainer">
-    <a href="/products">
-        <h1>PRODUCTS</h1>
-    </a>
-    <p>HELLO FROM PRODUCTS.HANDLEBARS</p>
+    <h1>PRODUCTS</h1>
+    <p>HELLO FROM PRODUCTS.HBS</p>
 </div><br>
 
 <div id="productsContainer">
@@ -52,7 +50,7 @@
             <h2><strong>{{this.title}}</strong></h2>
             <ul>
                 {{!-- <li>Product ID (file): {{this.pid}}</li> --}}
-                <li>Product ID (db): {{this._id}}</li>
+                <li>Product ID: {{this._id}}</li>
                 <li>Code: {{this.code}}</li>
                 <li>Price: ${{this.price}}</li>
                 <li>Stock: {{this.stock}}</li>
@@ -60,7 +58,7 @@
             </ul>
             <div id="actions">
                 <a href="/products/{{this._id}}"><button class="action1">Ver Producto</button></a>
-                <button class="action2" id="{{this._id}}">Agregar a Carrito</button>
+                <button class="action2" onclick="addProduct('{{this._id}}', '{{this.title}}')">Agregar a Carrito</button>
             </div><br>
         </div>
         {{/each}}
@@ -87,19 +85,42 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    const botones = document.querySelectorAll('.action2');
-    botones.forEach(boton => {
-        boton.addEventListener('click', (event) => {
-            let productID = event.target.id;
-            console.log(productID);
-
-            Swal.fire({
-                title: `Se ha agregado 1 unidad del producto con ID "${productID}" al carrito.
-                
-                TEST: Funcionalidad no desarrollada.`,
-                toast: true,
-                position: "top-end"
+    async function addProduct(pid, title) {
+        try {
+            const cid = '{{user.cart._id}}';
+            const duration = 1500;
+            const response = await fetch(`/api/carts/${cid}/product/${pid}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({"productQuantity": 1}),
             });
-        });
-    });
+            if (response.ok) {
+                // Notificar exito.
+                Swal.fire({
+                    title: `Se ha agregado 1 unidad de "${title}" al carrito.`,
+                    toast: true,
+                    position: "top-end",
+                    timer: duration,
+                    timerProgressBar: true
+                });
+                // Recargar página.
+                setTimeout(() => {
+                    location.reload();
+                }, duration);
+            } else {
+                // Notificar fallo.
+                Swal.fire({
+                    title: `No es posible agregar unidades al carrrito.`,
+                    toast: true,
+                    position: "top-end",
+                    timer: duration,
+                    timerProgressBar: true
+                });
+            }
+        } catch (error) {
+            console.error('Error en la solicitud POST:', error);
+        }
+    }
 </script>

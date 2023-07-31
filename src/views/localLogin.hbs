@@ -1,11 +1,19 @@
 <h1>LOCAL LOGIN</h1>
 
+{{#if resetMessage}}
+<div>{{resetMessage}}</div><br>
+{{/if}}
+
 <div>
     <form method="post" action="/api/sessions/login">
         <input type="text" placeholder="correo" name="email" /><br><br>
         <input type="password" placeholder="contrasena" name="password" /><br><br>
-        <button type="submit">Iniciar Session</button>
+        <button type="submit">Iniciar Sesión</button>
     </form><br>
+
+    <a href="/forgot-password">
+        <button>¿Olvidaste tu contraseña?</button>
+    </a>
     <hr>
 
     <div>
@@ -19,5 +27,5 @@
         <p>adminCoder@coder.com</p>
         <p>adminCod3r123</p>
     </div>
-    
+
 </div>

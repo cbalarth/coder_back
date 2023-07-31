@@ -1,9 +1,11 @@
+//DEFINE NOMBRES DE LAS COLECCIONES
 export const productsCollection = "products";
 export const cartsCollection = "carts";
 export const usersCollection = "users";
 export const chatCollection = "messages";
 export const ticketsCollection = "tickets";
 
+//DEFINE SISTEMA DE ERRORES
 export const EnumError = {
     ROUTING_ERROR: 1, //Error de ruta no existente.
     DATABASE_ERROR: 2, //Error con base de datos.
