@@ -28,18 +28,18 @@ cartsRouter.put("/:cid", checkAuthenticated, cartController.updateCartUnitaryPro
 //VACIAR x CID
 cartsRouter.delete("/:cid", cartController.emptyCartById);
 
-//COMPRAR CARRITO x CID (POR MEJORAR)
+//COMPRAR CARRITO x CID
 const cManager = new cartManager();
 const pManager = new productManager();
 const tManager = new ticketManager();
-cartsRouter.post("/:cid/purchase", checkAuthenticated, async (req, res) => {
+cartsRouter.post("/:cid/purchase", checkRole(["user", "premium"]), async (req, res) => {
     try {
         const email = req.user.email;
         const cartId = req.params.cid;
         const cart = await cManager.getCartById(cartId);
         if (cart) {
             if (!cart.products.length) {
-                return res.send("Es necesario que agrege productos antes de realizar la compra.")
+                return res.send({ status: "error", message: "Es necesario que agregue productos antes de realizar la compra." })
             }
             const ticketProducts = [];
             const rejectedProducts = [];
@@ -67,7 +67,7 @@ cartsRouter.post("/:cid/purchase", checkAuthenticated, async (req, res) => {
             // console.log(ticketCreated);
             const objTicket = { status: "success", products: ticketProducts, ticket: ticketCreated };
             await sendTicketEmail(email, objTicket); //Activa correo de ticket.
-            res.send(objTicket);
+            res.send({ status: "success", message: "Compra exitosa del carrito, detalle enviado al correo." });
         } else {
             res.send("El carrito no existe.")
         }

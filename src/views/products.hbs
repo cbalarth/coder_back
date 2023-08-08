@@ -55,10 +55,11 @@
                 <li>Price: ${{this.price}}</li>
                 <li>Stock: {{this.stock}}</li>
                 <li>Category: {{this.category}}</li>
+                <li>Owner: {{this.owner}}</li>
             </ul>
             <div id="actions">
                 <a href="/products/{{this._id}}"><button class="action1">Ver Producto</button></a>
-                <button class="action2" onclick="addProduct('{{this._id}}', '{{this.title}}')">Agregar a Carrito</button>
+                <button class="action2" onclick="addProduct('{{this._id}}', '{{this.title}}', '{{this.owner}}')">Agregar a Carrito</button>
             </div><br>
         </div>
         {{/each}}
@@ -85,10 +86,20 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    async function addProduct(pid, title) {
+    async function addProduct(pid, title, owner) {
         try {
-            const cid = '{{user.cart._id}}';
             const duration = 1500;
+            if (owner == '{{user.email}}') {
+                Swal.fire({
+                    title: `No puedes agregar tus propios productos al carrito.`,
+                    toast: true,
+                    position: "top-end",
+                    timer: duration,
+                    timerProgressBar: true
+                });
+                return;
+            }
+            const cid = '{{user.cart._id}}';
             const response = await fetch(`/api/carts/${cid}/product/${pid}`, {
                 method: 'PUT',
                 headers: {

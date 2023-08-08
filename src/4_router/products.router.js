@@ -23,12 +23,12 @@ productsRouter.get("/", productController.getProducts);
 productsRouter.get("/:pid", productController.getProductById);
 
 //AGREGAR PRODUCTO
-productsRouter.post("/", passport.authenticate("authJWT", { session: false }), checkRole(["premium", "admin"]), productController.addProduct);
+productsRouter.post("/", checkRole(["premium", "admin"]), productController.addProduct);
 
 //MODIFICAR x PID
 productsRouter.put("/:pid", checkRole(["premium, admin"]), productController.updateProduct);
 
 //ELIMINAR x PID
-productsRouter.delete("/:pid", passport.authenticate("authJWT", { session: false }), checkRole(["premium", "admin"]), productController.deleteProduct);
+productsRouter.delete("/:pid", checkRole(["premium", "admin"]), productController.deleteProduct);
 
 export default productsRouter;

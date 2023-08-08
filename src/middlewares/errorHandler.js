@@ -16,7 +16,7 @@ export const errorHandler = (error, req, res, next) => {
             break;
         case EnumError.INVALID_PARAM:
             res.json({ status: "Error", error: error.cause, message: error.message })
-            break;           
+            break;
         default:
             res.json({ status: "Error", message: "Hubo un error, contacte al equipo de soporte." })
             break;

@@ -43,9 +43,54 @@
     {{/each}}
 </div>
 
+<br>
+<button class="action2" onclick="emptyCart('{{user.cart._id}}')">Vaciar Carrito</button>
+<br>
+
 {{#if purchasable}}
     <br>
     <form id="buyCartForm" action="/api/carts/{{user.cart._id}}/purchase" method="POST">
-        <button class="action2">Comprar Carrito</button>
+        <button class="action3">Comprar Carrito</button>
     </form>
+    <br>
 {{/if}}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function emptyCart(cid) {
+        try {
+            const duration = 1500;
+            const response = await fetch(`/api/carts/${cid}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                // Notificar exito.
+                Swal.fire({
+                    title: `Se ha vaciado el carrito.`,
+                    toast: true,
+                    position: "top-end",
+                    timer: duration,
+                    timerProgressBar: true
+                });
+                // Recargar página.
+                setTimeout(() => {
+                    location.reload();
+                }, duration);
+            } else {
+                // Notificar fallo.
+                Swal.fire({
+                    title: `No es posible vaciar el carrrito.`,
+                    toast: true,
+                    position: "top-end",
+                    timer: duration,
+                    timerProgressBar: true
+                });
+            }
+        } catch (error) {
+            console.error('Error en la solicitud DELETE:', error);
+        }
+    }
+</script>

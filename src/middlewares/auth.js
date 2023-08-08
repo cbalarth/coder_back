@@ -24,6 +24,7 @@ const checkRole = (allowedRoles) => (req, res, next) => {
         if (!allowedRoles.includes(user.role)) {
             return res.status(403).send({ status: "error", error: "Usuario no autorizado (auth.js / role)." });
         }
+        req.user = user;
         next();
     })(req, res, next);
 };
